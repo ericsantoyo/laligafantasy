@@ -496,7 +496,7 @@ const NewMarketDown = () => {
           </div>
         </div>
 
-        <div className={`${gridClassName} w-full h-full transition-all`}>
+        <div className={`${gridClassName} w-full transition-all`}>
           <AgGridReact
             rowData={rowData}
             columnDefs={columnDefs}

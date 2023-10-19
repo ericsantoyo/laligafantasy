@@ -330,7 +330,7 @@ const NewMarketUp = () => {
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
             <Box className=" max-w-[350px] p-4 bg-neutral-100 dark:bg-neutral-600 text-neutral-800 dark:text-neutral-100 transition-all relative outline-none rounded-md ">
-              <Paper className="p-4 flex flex-row justify-between items-center rounded-md bg-blue-400">
+              <Paper className="p-4 flex flex-row justify-between items-center rounded-md ">
                 <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
                     <div className="flex flex-row justify-center items-center gap-x-2">
@@ -471,15 +471,16 @@ const NewMarketUp = () => {
           </Fade>
         </Modal>
       )}
-      <div
+      <Paper
+        elevation={4}
         id="grid-wrapper"
         // className="overflow-hidden "
         className={
-          "flex flex-col rounded-md border-[1px] border-neutral-300 shadow-neutral-300 dark:border-neutral-700 shadow dark:shadow-neutral-800"
+          "h-auto flex flex-col justify-start items-center transition-all"
         }
       >
         {/* Search Bar */}
-        <div className="flex justify-center items-center m-3 h-10">
+        <div className="flex flex-row justify-between items-center w-full h-16 px-3">
           <span className="flex justify-center items-center md:text-lg font-semibold mr-2 w-full text-center">
             Ultimas Subidas
           </span>
@@ -497,7 +498,9 @@ const NewMarketUp = () => {
           </div>
         </div>
 
-        <div className={`${gridClassName} w-full h-full transition-all`}>
+        <div id="myGrid" 
+        className={`${gridClassName} w-full  transition-all`}>
+          
           <AgGridReact
             rowData={rowData}
             columnDefs={columnDefs}
@@ -518,7 +521,7 @@ const NewMarketUp = () => {
             }}
           ></AgGridReact>
         </div>
-      </div>
+      </Paper>
     </>
   );
 };
