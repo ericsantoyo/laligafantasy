@@ -48,8 +48,8 @@ const TextItems: React.FC<TextItemsProps> = ({
             </Link>
             <span
               className="
-                      absolute left-0 -bottom-1 md:-bottom-2 h-[3px] group-hover:w-full
-                     bg-red-700 transition-all
+              absolute left-1/2 transform -translate-x-1/2 -bottom-1 md:-bottom-2 h-[3px] group-hover:w-[90%]
+              bg-red-700 transition-all
                      
                       "
             ></span>

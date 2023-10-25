@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 import SearchFilters from "@/components/stats/SearchFilters";
+import { slugById } from "@/utils/utils";
 
 // function getRevalidateInterval(): number {
 //   // Get the current time
@@ -143,13 +144,7 @@ function getWeeksTotalPointsFromStats(player) {
 const formatter = new Intl.NumberFormat("en-GB", {});
 
 //To get the teamSlugs by teamID
-function slugById(playerID: number): string {
-  const team = teamsSlugsByID.find((team) => team.id === playerID);
 
-  const slug = team ? team.slug : "Not Wrong Found";
-
-  return slug;
-}
 
 StatsPage.defaultProps = {
   searchParams: {

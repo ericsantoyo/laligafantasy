@@ -17,6 +17,7 @@ const Logo = (props: Props) => {
           height={63}
           alt="OnceFantasy Logo"
           style={{ height: "63", width: "135",}}
+          priority
         />
       </Link>
     

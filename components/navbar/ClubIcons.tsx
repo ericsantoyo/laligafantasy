@@ -15,13 +15,13 @@ type Props = {};
 
 const ClubIcons = (props: Props) => {
   return (
-  <div className="flex justify-center items-center flex-wrap px-1 pt-1 pb-2">
+    <div className="flex justify-center items-center flex-wrap px-1 pt-1 pb-2">
       <ul className="flex-wrap pl-0 pr-0 py-1 list-none flex justify-center items-center">
         {clubIcons.map((club: ClubIcon) => {
           return (
             <li
-            key={club.id}
-            className="
+              key={club.id}
+              className="
               hover:rounded-md 
               hover:shadow-inner
               hover:shadow-neutral-500 
@@ -30,19 +30,39 @@ const ClubIcons = (props: Props) => {
               hover:dark:shadow-neutral-900
               h-12 w-12 flex justify-center items-center
             "
-          >
-            <Link className="" href={`/team/${club.id}`}>
-              <div className="flex justify-center items-center ">
-                <Image
-                  src={club.badgeColor}
-                  alt={club.shortName}
-                  width={48}
-                  height={48}
-                  className="h-12 w-auto p-[6px]"
-                />
-              </div>
-            </Link>
-          </li>
+            >
+              <Link className="" href={`/team/${club.id}`}>
+                <div className="flex justify-center items-center ">
+                  <Image
+                    src={club.badgeColor}
+                    alt={club.shortName}
+                    width={48}
+                    height={48}
+                    style={{
+                      objectFit: "contain",
+                      width: "auto",
+                      
+                    }}
+                    className="h-12 p-[6px]"
+                    priority
+                  />
+
+                  {/* <Image
+                    src={club.badgeColor}
+                    alt={club.shortName}
+                    width={48}
+                    height={48}
+                    style={{
+                      objectFit: "contain",
+                      width: "auto",
+                      height: "auto",
+                    }}
+                    className="h-12 p-[6px]"
+                    priority // Add this line
+                  /> */}
+                </div>
+              </Link>
+            </li>
           );
         })}
       </ul>

@@ -2,51 +2,21 @@ import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
-import KeyboardTabIcon from "@mui/icons-material/KeyboardTab";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { getAllMatches } from "@/database/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
+import { slugById } from "@/utils/utils";
+
 
 type Props = {
-  open: boolean;
-  onClose: () => void;
+
 };
 
-const teamsSlugsByID = [
-  { id: 21, slug: "d-alaves" },
-  { id: 1, slug: "ud-almeria" },
-  { id: 3, slug: "athletic-club" },
-  { id: 2, slug: "atletico-de-madrid" },
-  { id: 4, slug: "fc-barcelona" },
-  { id: 5, slug: "real-betis" },
-  { id: 162, slug: "cadiz-cf" },
-  { id: 6, slug: "rc-celta" },
-  { id: 9, slug: "getafe-cf" },
-  { id: 28, slug: "girona-fc" },
-  { id: 10, slug: "granada-cf" },
-  { id: 31, slug: "ud-las-palmas" },
-  { id: 33, slug: "rcd-mallorca" },
-  { id: 13, slug: "c-a-osasuna" },
-  { id: 14, slug: "rayo-vallecano" },
-  { id: 15, slug: "real-madrid" },
-  { id: 16, slug: "real-sociedad" },
-  { id: 17, slug: "sevilla-fc" },
-  { id: 18, slug: "valencia-cf" },
-  { id: 20, slug: "villarreal-cf" },
-];
 
-function slugById(playerID) {
-  const team = teamsSlugsByID.find((team) => team.id === playerID);
 
-  const slug = team ? team.slug : "Not Wrong Found";
-
-  return slug;
-}
-
-const RightDrawer = (props: Props) => {
-  const { open, onClose } = props;
+const RightGameSheet = (props: Props) => {
   const [matches, setMatches] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(1); // Initial selected week
   const [loading, setLoading] = useState(true);
@@ -130,25 +100,13 @@ const RightDrawer = (props: Props) => {
   }
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}>
+    <Drawer anchor="right">
       {/* <pre className="">{JSON.stringify(matches, null, 2)}</pre> */}
       <Paper
         elevation={24}
         className="flex flex-col justify-start items-center w-[350px] p-4 h-full overflow-y-auto"
       >
         <div className="flex flex-row justify-start items-center w-full">
-          <IconButton
-            size="large"
-            sx={{
-              boxShadow: 3,
-              borderRadius: 1,
-              padding: 0,
-            }}
-            className={`w-12 h-12`}
-            onClick={onClose}
-          >
-            <KeyboardTabIcon />
-          </IconButton>
           <p className="text-xl font-semibold ml-12">PARTIDOS</p>
         </div>
 
@@ -224,9 +182,10 @@ const RightDrawer = (props: Props) => {
               </div>
             ))}
         </div>
+    
       </Paper>
     </Drawer>
   );
 };
 
-export default RightDrawer;
+export default RightGameSheet;

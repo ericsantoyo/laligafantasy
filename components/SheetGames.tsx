@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { slugById } from "@/utils/utils";
 
-import { slugById } from "@/utils"; // You can move the utility function to a shared location
 
 const SheetGames = ({
   handlePrevWeek,
