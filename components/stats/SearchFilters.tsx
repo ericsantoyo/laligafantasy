@@ -5,28 +5,18 @@ import { useRouter } from "next/navigation";
 
 import { useEffect, useRef, useState } from "react";
 
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import TextField from "@mui/material/TextField";
-
 import { Search } from "lucide-react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectGroup,
-//   SelectItem,
-//   SelectLabel,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Team } from "@/types";
 
 type Props = {
@@ -87,46 +77,60 @@ const SearchFilters = ({ search }: Props) => {
   const resetFilters = () => {
     setPlayerName("");
     setSelectedTeam("-1");
-
+    // If you want to clear the URL as well, add the following:
+    // router.push(`/stats`);
   };
 
   return (
-    <div className="flex justify-center items-center py-4 gap-4">
-      <div className="relative min-w-[90px] max-w-[170px] rounded-md">
-        <Search className="absolute h-4 w-4 top-3 left-3" />
-        <TextField
-          fullWidth
-          className="pl-9"
+    <div className="flex justify-center items-center py-4 gap-4 ">
+      {/* <pre className="">{JSON.stringify(teams, null, 2)}</pre> */}
+      <div
+        className={`
+        flex flex-row items-center justify-center  transition-all
+        relative min-w-[90px] max-w-[170px] rounded-md
+        
+         `}
+      >
+        <Search className="absolute h-4 w-4 top-3 left-3 " />
+        <Input
+          className="pl-9 outline-none"
+          type="text"
           placeholder="Search..."
           value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          variant="outlined"
+          onChange={(e) => {
+            setPlayerName(e.target.value);
+          }}
         />
       </div>
 
       {teams.length > 0 && (
-        <FormControl variant="outlined" className="min-w-[140px] max-w-[170px]">
-          <InputLabel id="team-select-label">Team</InputLabel>
-          <Select
-            labelId="team-select-label"
-            value={selectedTeam}
-            onChange={(event) => setSelectedTeam(event.target.value)}
-            label="Team"
-          >
-            {getTeamsOptions(teams).map((team) => (
-              <MenuItem value={team.teamID.toString()} key={team.teamID}>
-                {team.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+          <SelectTrigger className="min-w-[140px] max-w-[170px]">
+            <SelectValue placeholder="Select a Team" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {getTeamsOptions(teams).map((team) => (
+                <SelectItem value={team.teamID.toString()} key={team.teamID}>
+                  {team.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       )}
 
-      <IconButton size="small" onClick={resetFilters}>
+      <Button
+        variant="stardard"
+        size="default"
+        className={` transition-all `}
+        onClick={resetFilters}
+      >
         X
-      </IconButton>
+      </Button>
     </div>
   );
 };
 
 export default SearchFilters;
+

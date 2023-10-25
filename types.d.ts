@@ -74,3 +74,14 @@ export type PlayerStats = {
   won_contest: [number, number];
   yellow_card: [number, number];
 };
+
+export type Matches = {
+  matchID: number;
+  matchDate: string;
+  week: number;
+  localScore: number;
+  visitorScore: number;
+  localTeamID: number;
+  visitorTeamID: number;
+  matchState: number;
+};

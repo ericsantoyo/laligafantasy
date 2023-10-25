@@ -1,6 +1,7 @@
-import NewMarketDown from '@/components/market/NewMarketDown'
-import NewMarketUp from '@/components/market/NewMarketUp'
-import Image from 'next/image'
+import NewMarketDown from "@/components/market/NewMarketDown";
+import NewMarketUp from "@/components/market/NewMarketUp";
+import { Grid } from "@mui/material";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -8,5 +9,5 @@ export default function Home() {
       <NewMarketUp />
       <NewMarketDown />
     </main>
-  )
+  );
 }

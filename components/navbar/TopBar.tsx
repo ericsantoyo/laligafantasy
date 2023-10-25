@@ -6,7 +6,12 @@ import SearchBox from "@/components/navbar/SearchBox";
 import SocialIcons from "@/components/navbar/SocialIcons";
 import TextItems from "@/components/navbar/TextItems";
 import Hamburger from "@/components/navbar/Hamburger";
-import { ThemeSwitcher } from "@/components/navbar/ThemeSwitcher";
+
+import Paper from "@mui/material/Paper";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import KeyboardTabIcon from "@mui/icons-material/KeyboardTab";
+import RightDrawer from "../RightDrawer";
 
 // import { UserButton } from "@clerk/nextjs";
 // import {
@@ -26,6 +31,16 @@ const TopBar = (props: Props) => {
     setNavbar(!navbar);
   };
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
   return (
     <>
       <div
@@ -35,8 +50,8 @@ const TopBar = (props: Props) => {
         "
       >
         {/* --- GAMES ICON --- */}
-        <div className="md:order-2 shrink-0">
-          <GamesIcon className="" />
+        <div className="md:order-2 shrink-0 md:ml-4">
+          <GamesIcon onClick={handleDrawerOpen} className="" />
         </div>
 
         {/* --- LOGO --- */}
@@ -101,8 +116,10 @@ const TopBar = (props: Props) => {
           />
         </div>
       </div>
+      <RightDrawer open={drawerOpen} onClose={handleDrawerClose} />
     </>
   );
 };
 
 export default TopBar;
+

@@ -1,6 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .themedarklight {
+    @apply 
+      /* bg-[#fff] 
+      dark:bg-[#121212]
+      text-neutral-800 
+      dark:text-[#fff]  */
+      /* bg-neutral-100 
+      dark:bg-neutral-600 
+      text-neutral-800 
+      dark:text-neutral-100  */
+      transition-all ;
+  }
+}
  
 @layer base {
   :root {
@@ -74,6 +89,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+
 
 .ag-root-wrapper  {
   --ag-header-column-separator-display: none;

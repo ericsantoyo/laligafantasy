@@ -1,3 +1,4 @@
+import { Matches } from "@/types";
 import { supabase } from "./supabase";
 
 type Player = object;
@@ -116,6 +117,15 @@ async function getPlayersByTeamID(
   return { data, error };
 }
 
+async function getAllMatches(): Promise<{ allMatches: Matches[] }> {
+  const { data: allMatches } = await supabase
+    .from("matches")
+    .select("*")
+    .order("matchID", { ascending: false });
+  return { allMatches };
+}
+
+
 export {
   getAllPlayers,
   getAllStats,
@@ -124,4 +134,5 @@ export {
   getTeamByTeamID,
   getPlayersByTeamID,
   getPaginatedPlayers,
+  getAllMatches,
 };

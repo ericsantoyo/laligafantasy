@@ -44,7 +44,7 @@ const SocialIcons: React.FC<SocialIconsProps> = ({ className }) => {
 
         </Link>
 
-        <ThemeSwitcher className="" />
+        {/* <ThemeSwitcher className="" /> */}
 
         {/* THREADS LOGO */}
         {/* <Link className="bg-gradient-to-r from-white to-white hover:from-[#7a7a7a] hover:to-[#7a7a7aab] transition flex justify-center items-center rounded-full w-7 h-7 align-middle drop-shadow-md shadow-black" target="_blank" href="https://threads.net/">

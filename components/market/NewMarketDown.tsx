@@ -10,7 +10,7 @@ import tableSubidasBajadas from "./tableProps/tableSubidasBajadas";
 import tablePlayerNames from "./tableProps/tablePlayerNames";
 import tablePlayerImg from "./tableProps/tablePlayerImg";
 import { getAllPlayers, getAllStats } from "@/database/client";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import Image from "next/image";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
 
@@ -31,6 +31,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 
 const teamsSlugsByID = [
   { id: 21, slug: "d-alaves" },
@@ -85,7 +86,7 @@ function formatMoney(value) {
 
 const NewMarketDown = () => {
   const [rowData, setRowData] = useState();
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [gridClassName, setGridClassName] = useState("");
@@ -93,11 +94,11 @@ const NewMarketDown = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  useEffect(() => {
-    setGridClassName(
-      theme === "light" ? "ag-theme-balham" : "ag-theme-balham-dark"
-    );
-  }, [theme]);
+  // useEffect(() => {
+  //   setGridClassName(
+  //     theme === "light" ? "ag-theme-balham" : "ag-theme-balham-dark"
+  //   );
+  // }, [theme]);
 
   function formatPlayersWithStats(players, stats) {
     const formattedPlayers = [];
@@ -304,6 +305,7 @@ const NewMarketDown = () => {
     // console.log(points);
     return points;
   }
+
   return (
     <>
       {selectedPlayer && (
@@ -311,7 +313,6 @@ const NewMarketDown = () => {
           open={open}
           onClose={handleClose}
           closeAfterTransition
-
           // sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", zIndex: 1 }}
           slots={{
             backdrop: Backdrop,
@@ -328,9 +329,16 @@ const NewMarketDown = () => {
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-            <Box className=" max-w-[350px] pt-6 pb-5 px-3 bg-neutral-100 dark:bg-neutral-600 text-neutral-800 dark:text-neutral-100 transition-all relative outline-none rounded-md ">
-              <div className="mx-6 flex flex-row justify-between items-center">
-                <div className="flex flex-col justify-center items-center gap-2">
+            <Paper
+              variant="outlined"
+              // sx={style}
+              className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md "
+            >
+              <Paper
+                elevation={1}
+                className="p-4 flex flex-row justify-between items-center rounded-md "
+              >
+                <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
                     <div className="flex flex-row justify-center items-center gap-x-2">
                       Puntos:{" "}
@@ -391,7 +399,7 @@ const NewMarketDown = () => {
                       height={64}
                       className="h-16 w-auto "
                     />
-                    <div className="flex justify-between items-center text-center font-bold text-md uppercase">
+                    <div className="flex justify-between items-center text-center font-bold text-md uppercase max-w-[132px]">
                       {selectedPlayer.playerData.nickname}
                     </div>
                   </div>
@@ -405,7 +413,7 @@ const NewMarketDown = () => {
                     className="h-6 w-auto"
                   />
                 </div>
-              </div>
+              </Paper>
               <Table className="m-auto w-auto mt-4">
                 <TableCaption className="text-xs font-extralight">
                   Cambios de Valor (Ultimos 14 Dias)
@@ -466,21 +474,22 @@ const NewMarketDown = () => {
                   ))}
                 </TableBody>
               </Table>
-            </Box>
+            </Paper>
           </Fade>
         </Modal>
       )}
-      <div
+      <Paper
+        elevation={4}
         id="grid-wrapper"
         // className="overflow-hidden "
         className={
-          "flex flex-col rounded-md border-[1px] border-neutral-300 shadow-neutral-300 dark:border-neutral-700 shadow dark:shadow-neutral-800"
+          "h-auto flex flex-col justify-start items-center transition-all"
         }
       >
         {/* Search Bar */}
-        <div className="flex justify-center items-center m-3 h-10">
+        <Box className="flex flex-row justify-between items-center w-full h-16 px-3">
           <span className="flex justify-center items-center md:text-lg font-semibold mr-2 w-full text-center">
-            Ultimas Bajadas
+            <ChevronsDown size={24} className="mr-2" /> Ultimas Bajadas
           </span>
           <div className="relative w-full">
             <Search className="absolute h-4 w-4 top-3 left-4 text-muted-foreground" />
@@ -494,9 +503,9 @@ const NewMarketDown = () => {
         "
             />
           </div>
-        </div>
+        </Box>
 
-        <div className={`${gridClassName} w-full transition-all`}>
+        <div id="myGrid" className={`ag-theme-balham w-full  transition-all`}>
           <AgGridReact
             rowData={rowData}
             columnDefs={columnDefs}
@@ -517,7 +526,7 @@ const NewMarketDown = () => {
             }}
           ></AgGridReact>
         </div>
-      </div>
+      </Paper>
     </>
   );
 };

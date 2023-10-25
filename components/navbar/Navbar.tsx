@@ -13,7 +13,7 @@ const Navbar = (props: Props) => {
   
       <Paper
         elevation={3}
-        className="w-full bg-neutral-100 dark:bg-neutral-700 transition-all mb-4 mt-[-8px] pt-2"
+        className="w-full transition-all mb-2 mt-[-8px] pt-2"
       >
         {/* NAVBAR - TOP ROW */}
         <TopBar />
