@@ -93,17 +93,16 @@ async function getPlayerById(
   };
 }
 
-async function getTeamByTeamID(
-  teamID: number
-): Promise<{ data: Team | null; error: string | null }> {
-  if (!teamID)
-    return { data: null, error: "No teamID provided for getTeamByTeamID" };
+async function getTeamByTeamID(teamID) {
+  if(!teamID) return { data: null, error: "No teamID provided"}
   const { data, error } = await supabase
-    .from("teams")
-    .select("*")
-    .eq("teamID", teamID);
+      .from('teams')
+      .select('*')
+      .eq('teamID', teamID)
+
   return { data, error };
 }
+
 
 async function getPlayersByTeamID(
   teamID: number

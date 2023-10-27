@@ -34,29 +34,7 @@ export const revalidate = 0;
 
 type Props = {};
 
-//teamsSlugs and teamIDs
-const teamsSlugsByID = [
-  { id: 21, slug: "d-alaves" },
-  { id: 1, slug: "ud-almeria" },
-  { id: 3, slug: "athletic-club" },
-  { id: 2, slug: "atletico-de-madrid" },
-  { id: 4, slug: "fc-barcelona" },
-  { id: 5, slug: "real-betis" },
-  { id: 162, slug: "cadiz-cf" },
-  { id: 6, slug: "rc-celta" },
-  { id: 9, slug: "getafe-cf" },
-  { id: 28, slug: "girona-fc" },
-  { id: 10, slug: "granada-cf" },
-  { id: 31, slug: "ud-las-palmas" },
-  { id: 33, slug: "rcd-mallorca" },
-  { id: 13, slug: "c-a-osasuna" },
-  { id: 14, slug: "rayo-vallecano" },
-  { id: 15, slug: "real-madrid" },
-  { id: 16, slug: "real-sociedad" },
-  { id: 17, slug: "sevilla-fc" },
-  { id: 18, slug: "valencia-cf" },
-  { id: 20, slug: "villarreal-cf" },
-];
+
 
 function getPositionBadge(positionID: number): JSX.Element {
   switch (positionID) {

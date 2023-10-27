@@ -109,3 +109,27 @@ const SheetGames = ({
 };
 
 export default SheetGames;
+
+
+
+
+
+
+
+
+  // const { data: playersData } = await getPlayersByTeamID(params.teamID);
+
+  // function formatPlayersWithStats(players, stats) {
+  //   const formattedPlayers = [];
+
+  //   for (const player of players) {
+  //     const playerStats = stats.filter(
+  //       (stat) => stat.playerID === player.playerID
+  //     );
+  //     formattedPlayers.push({ playerData: player, stats: playerStats });
+  //   }
+
+  //   return formattedPlayers;
+  // }
+
+  // const playersWithStats = formatPlayersWithStats(playersData, statsData);
