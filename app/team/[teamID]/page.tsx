@@ -5,17 +5,25 @@ import {
   getTeamByTeamID,
   getPlayersByTeamID,
 } from "@/database/client";
-import TeamLayout from "@/components/team/TeamLayout";
+import TeamLayout from "@/app/components/team/TeamLayout"
 import Paper from "@mui/material/Paper";
+import Image from "next/image";
 
 const formatter = new Intl.NumberFormat("en-GB", {});
 
 
 const TeamCard = ({ data }) => {
   return (
-    <Paper className="transition-all flex flex-col content-center p-5 mb-5 bg-neutral-50 dark:bg-neutral-500/30 rounded-md border-[1px] border-neutral-300 shadow-neutral-300 dark:border-neutral-700 shadow dark:shadow-neutral-800">
+    
+    <Paper elevation={3} className="transition-all flex flex-col justify-center items-center w-full">
       <div className="">
-        {/* <img src={} alt="team" /> */}
+        <Image
+          src={data.image}
+          alt={data.name}
+          width={80}
+          height={80}
+          className="h-20 w-auto "
+        />
       </div>
       <div className="">
         {/* <p>Team name</p> */}
@@ -23,8 +31,8 @@ const TeamCard = ({ data }) => {
           {data.name} ({data.nickname})
         </h3>
       </div>
-      <div className="">
-        <p>Total points</p>
+      <div className="flex">
+        <p>Total points:</p>
         <h3>{data.totalPoints}</h3>
       </div>
       <div className="">
@@ -103,7 +111,7 @@ export default async function Team({ params }) {
 
 
   return (
-    <div className="text-md text-center">
+    <div className=" flex flex-col gap-3">
 
       <TeamCard
         data={{
@@ -117,11 +125,9 @@ export default async function Team({ params }) {
         }}
       />
 
-      <h2 className="text-xl font-bold">TEAM {team.name}</h2>
-      <h2>Team ID: {team.teamID}</h2>
       
       {/* <pre className="">{JSON.stringify(playersData, null, 2)}</pre> */}
-      <TeamLayout playersWithStats={players} />
+      <TeamLayout allPlayersData={players} />
     </div>
   );
 }

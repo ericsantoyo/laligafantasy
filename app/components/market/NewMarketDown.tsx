@@ -3,12 +3,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-balham.min.css";
-import tablePositions from "./tableProps/tablePositions";
-import tableValues from "./tableProps/tableValues";
-import tableClubLogos from "./tableProps/tableClubLogos";
-import tableSubidasBajadas from "./tableProps/tableSubidasBajadas";
-import tablePlayerNames from "./tableProps/tablePlayerNames";
-import tablePlayerImg from "./tableProps/tablePlayerImg";
+import tablePositions from "@/app/components/market/tableProps/tablePositions";
+import tableValues from "@/app/components/market/tableProps/tableValues";
+import tableClubLogos from "@/app/components/market/tableProps/tableClubLogos";
+import tableSubidasBajadas from "@/app/components/market/tableProps/tableSubidasBajadas";
+import tablePlayerNames from "@/app/components/market/tableProps/tablePlayerNames";
+import tablePlayerImg from "@/app/components/market/tableProps/tablePlayerImg";
 import { getAllPlayers, getAllStats } from "@/database/client";
 // import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -34,8 +34,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { slugById } from "@/utils/utils";
 
-
-
 const getColor = (points) => {
   if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
   if (points >= 5) return "bg-green-500 text-neutral-50 font-bold text-shadow";
@@ -59,9 +57,9 @@ function formatMoney(value) {
 const NewMarketDown = () => {
   const [rowData, setRowData] = useState();
   // const { theme } = useTheme();
-  const [modalOpen, setModalOpen] = useState(false);
+
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [gridClassName, setGridClassName] = useState("");
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

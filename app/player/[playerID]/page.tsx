@@ -5,7 +5,7 @@ import {
   getTeamByTeamID,
   // getPlayerById,
 } from "@/database/client";
-import TeamLayout from "@/components/team/TeamLayout";
+
 import Paper from "@mui/material/Paper";
 import { supabase } from "@/database/supabase";
 import Image from "next/image";
@@ -46,7 +46,7 @@ export default async function Player({ params }) {
   const team = fetchedTeam[0];
 
   return (
-    <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
      
         <Paper className="flex flex-col justify-center items-center">
           

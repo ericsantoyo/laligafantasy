@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-import SearchFilters from "@/components/stats/SearchFilters";
+import SearchFilters from "@/app/components/stats/SearchFilters"
 import { slugById } from "@/utils/utils";
 
 // function getRevalidateInterval(): number {
@@ -181,7 +181,7 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
   };
 
   return (
-    <div className="max-w-6xl flex flex-col justify-center px-4  mx-auto w-full">
+    <div className="flex flex-col justify-center px-4 w-full">
       {/* <h1 className="text-xl font-bold text-center">STATS Page</h1> */}
       <SearchFilters />
       {/* PLAYERS GRID */}

@@ -1,18 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import GamesIcon from "@/components/navbar/GamesIcon";
-import Logo from "@/components/navbar/Logo";
-import SearchBox from "@/components/navbar/SearchBox";
-import SocialIcons from "@/components/navbar/SocialIcons";
-import TextItems from "@/components/navbar/TextItems";
-import Hamburger from "@/components/navbar/Hamburger";
+import GamesIcon from "@/app/components/navbar/GamesIcon";
+import Logo from "@/app/components/navbar/Logo";
+import SearchBox from "@/app/components/navbar/SearchBox";
+import SocialIcons from "@/app/components/navbar/SocialIcons";
+import TextItems from "@/app/components/navbar/TextItems";
+import Hamburger from "@/app/components/navbar/Hamburger";
 
 import { getAllMatches } from "@/database/client";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import Image from "next/image";
-
-import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
 
 
 import {
@@ -26,15 +21,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import SheetGames from "../SheetGames";
 
 // import { UserButton } from "@clerk/nextjs";
@@ -48,11 +35,10 @@ import SheetGames from "../SheetGames";
 
 type Props = {};
 
-
 const TopBar = (props: Props) => {
   const [navbar, setNavbar] = useState(false);
   const [matches, setMatches] = useState([]);
-  const [selectedWeek, setSelectedWeek] = useState(1); // Initial selected week
+  const [selectedWeek, setSelectedWeek] = useState(1); 
   const [loading, setLoading] = useState(true);
   const handleSearch = (query: string) => {};
   const handleHamburgerClick = () => {
@@ -136,8 +122,6 @@ const TopBar = (props: Props) => {
     return <p>No matches available.</p>;
   }
 
-
-
   return (
     <>
       <Sheet>
@@ -217,18 +201,14 @@ const TopBar = (props: Props) => {
             />
           </div>
         </div>
-        <SheetContent 
-        className=" w-[370px] sm:w-[370px] p-0" 
-
-        >
-           <SheetGames
+        <SheetContent className=" w-[370px] sm:w-[370px] p-0">
+          <SheetGames
             handlePrevWeek={handlePrevWeek}
             selectedWeek={selectedWeek}
             handleWeekChange={handleWeekChange}
             handleNextWeek={handleNextWeek}
             matches={matches}
           />
-      
         </SheetContent>
       </Sheet>
     </>

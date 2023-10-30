@@ -1,4 +1,3 @@
-import React from "react";
 import TopBar from "./TopBar";
 import ClubIcons from "./ClubIcons";
 import { Paper } from "@mui/material";
@@ -13,7 +12,7 @@ const Navbar = (props: Props) => {
   
       <Paper
         elevation={3}
-        className="w-full transition-all mb-4 mt-[-8px] pt-2"
+        className="w-full transition-all pt-2 mb-5"
       >
         {/* NAVBAR - TOP ROW */}
         <TopBar />

@@ -34,12 +34,12 @@ const SheetGames = ({
         </IconButton>
         <Select value={selectedWeek} onValueChange={handleWeekChange}>
           <SelectTrigger>
-            <SelectValue>{`Week ${selectedWeek}`}</SelectValue>
+            <SelectValue>{`Jornada ${selectedWeek}`}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {Array.from({ length: 38 }, (_, index) => (
               <SelectItem key={index + 1} value={index + 1}>
-                {`Week ${index + 1}`}
+                {`Jornada ${index + 1}`}
               </SelectItem>
             ))}
           </SelectContent>

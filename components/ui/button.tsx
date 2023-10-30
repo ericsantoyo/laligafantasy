@@ -19,6 +19,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        gamesicon:
+          "bg-background dark:bg-neutral-200 dark:text-neutral-800 hover:bg-emerald-600 dark:hover:bg-emerald-600 shadow-sm shadow-neutral-400 dark:shadow-neutral-900", 
       },
       size: {
         default: "h-9 px-4 py-2",

@@ -26,7 +26,9 @@ async function getPaginatedPlayers({
     page: number;
     limit: number;
   }): Promise<{ paginatedPlayers: Player[]; totalCount: number }> {
-    try {
+    //imitate delay
+
+  
       let request = supabase.from("players").select("*");
   
       if (teamID !== undefined) {
@@ -42,11 +44,9 @@ async function getPaginatedPlayers({
         .range(page * limit - limit, page * limit - 1);
   
       return { paginatedPlayers, totalCount: count };
-    } catch (error) {
-      console.error("Error fetching paginated players:", error);
-      throw error;
-    }
-  }
+    } 
+  
+  
   
 
 async function getAllStats(): Promise<{ allStats: Stat[] }> {

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Roboto, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
+import Navbar from "@/app/components/navbar/Navbar";
 import { Main } from "next/document";
+import StyledJsxRegistry from "./registry";
 // import { ThemeProvider } from "./theme-provider";
 // import ThemeRegistry from "./ThemeRegistry";
 
@@ -35,16 +36,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className}  transition-all`}>
+    <html suppressHydrationWarning lang="en">
+      <body className={`${inter.className} transition-all`}>
         <Navbar />
+        <main className="container">
 
+        
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         {/* <ThemeRegistry options={{ key: "mui" }}> */}
-        {children}
-
+       {children}
         {/* </ThemeRegistry> */}
         {/* </ThemeProvider> */}
+
+        </main>
       </body>
     </html>
   );
