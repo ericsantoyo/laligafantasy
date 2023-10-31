@@ -23,6 +23,7 @@ import {
 
 
 import SheetGames from "../SheetGames";
+import NewSheetGames from "../RightGameSheet";
 
 // import { UserButton } from "@clerk/nextjs";
 // import {
@@ -33,94 +34,18 @@ import SheetGames from "../SheetGames";
 // } from "@clerk/nextjs";
 // import { Button } from "@/components/ui/button";
 
+// CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE    eeeeeeeeeeeeeeeeeeeeeeeeeeeee start 
+
 type Props = {};
 
 const TopBar = (props: Props) => {
   const [navbar, setNavbar] = useState(false);
-  const [matches, setMatches] = useState([]);
-  const [selectedWeek, setSelectedWeek] = useState(1); 
-  const [loading, setLoading] = useState(true);
+
   const handleSearch = (query: string) => {};
   const handleHamburgerClick = () => {
     setNavbar(!navbar);
   };
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const { allMatches: matchesData } = await getAllMatches();
 
-        if (matchesData) {
-          setMatches(matchesData);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching matches:", error);
-        // Handle error, show a message, etc.
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (!loading && matches.length > 0) {
-      const currentWeek = getCurrentWeek(matches);
-      setSelectedWeek(currentWeek);
-    }
-  }, [loading, matches]);
-
-  const handleWeekChange = (value) => {
-    setSelectedWeek(value);
-  };
-
-  const handlePrevWeek = () => {
-    setSelectedWeek((prevWeek) => Math.max(1, prevWeek - 1));
-  };
-
-  const handleNextWeek = () => {
-    setSelectedWeek((prevWeek) => Math.min(38, prevWeek + 1));
-  };
-
-  const getCurrentWeek = (matchesData) => {
-    const today = new Date();
-
-    for (const match of matchesData) {
-      const matchDate = new Date(match.matchDate);
-
-      const formattedMatchDate = new Date(matchDate.toISOString());
-
-      if (
-        today >= formattedMatchDate &&
-        today <= new Date(formattedMatchDate).setHours(23, 59, 59)
-      ) {
-        return match.week;
-      }
-
-      const allMatchesForWeek = matchesData.filter(
-        (m) => m.week === match.week
-      );
-      const allMatchesFinished = allMatchesForWeek.every(
-        (m) => m.matchState === 7
-      );
-
-      if (allMatchesFinished) {
-        const nextWeek = match.week + 1;
-        return nextWeek;
-      }
-    }
-
-    console.log("No matching week found, defaulting to week 1");
-    return 1;
-  };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!matches || matches.length === 0) {
-    return <p>No matches available.</p>;
-  }
 
   return (
     <>
@@ -134,7 +59,7 @@ const TopBar = (props: Props) => {
           {/* --- GAMES ICON --- */}
           <div className="md:order-2 shrink-0 md:ml-4">
             {/* <GamesIcon onClick={handleDrawerOpen} className="" /> */}
-            <SheetTrigger>
+            <SheetTrigger asChild>
               <GamesIcon className="" />
             </SheetTrigger>
           </div>
@@ -201,14 +126,15 @@ const TopBar = (props: Props) => {
             />
           </div>
         </div>
-        <SheetContent className=" w-[370px] sm:w-[370px] p-0">
-          <SheetGames
+        <SheetContent className=" w-[370px] sm:w-[370px] p-0 flex flex-col">
+          {/* <SheetGames
             handlePrevWeek={handlePrevWeek}
             selectedWeek={selectedWeek}
             handleWeekChange={handleWeekChange}
             handleNextWeek={handleNextWeek}
             matches={matches}
-          />
+          /> */}
+          <NewSheetGames/>
         </SheetContent>
       </Sheet>
     </>
