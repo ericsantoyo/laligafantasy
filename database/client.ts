@@ -27,7 +27,7 @@ async function getPaginatedPlayers({
     limit: number;
   }): Promise<{ paginatedPlayers: Player[]; totalCount: number }> {
     //imitate delay
-
+    
   
       let request = supabase.from("players").select("*");
   
@@ -117,11 +117,16 @@ async function getPlayersByTeamID(
 }
 
 async function getAllMatches(): Promise<{ allMatches: Matches[] }> {
+  //imitate delay 
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+ 
+
   const { data: allMatches } = await supabase
     .from("matches")
     .select("*")
     .order("matchID", { ascending: false });
   return { allMatches };
+
 }
 
 

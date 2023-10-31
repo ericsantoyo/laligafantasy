@@ -133,3 +133,50 @@ export default SheetGames;
   // }
 
   // const playersWithStats = formatPlayersWithStats(playersData, statsData);
+
+
+
+  <Paper
+                  elevation={2}
+                  className="flex flex-col justify-between items-center w-[150px] h-full py-1 text-center"
+                >
+                  <p className="text-[11px]">
+                    {new Date(match.matchDate).toLocaleDateString("es-EU", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                  <div className="flex flex-row justify-between items-center text-center">
+                    <Image
+                      src={`/teamLogos/${slugById(match.localTeamID)}.png`}
+                      alt="home"
+                      width={48}
+                      height={48}
+                      style={{ objectFit: "contain" }}
+                      className="h-7 mr-3"
+                    />
+                    <div className="flex flex-col justify-center items-center">
+                      <div className="flex">
+                        <p className="font-semibold">{match.localScore}</p>
+                        <p className="mx-1">-</p>
+                        <p className="font-semibold">{match.visitorScore}</p>
+                      </div>
+                    </div>
+                    <Image
+                      src={`/teamLogos/${slugById(match.visitorTeamID)}.png`}
+                      alt="home"
+                      width={48}
+                      height={48}
+                      style={{ objectFit: "contain" }}
+                      className="h-7 ml-3"
+                    />
+                  </div>
+                  <p className="text-[11px]">
+                    {new Date(match.matchDate).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </p>
+                </Paper>

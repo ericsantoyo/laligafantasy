@@ -33,6 +33,8 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { slugById } from "@/utils/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import useSWR from "swr";
 
 
 
@@ -85,20 +87,21 @@ const NewMarketUp = () => {
     return formattedPlayers;
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      // setIsLoading(true);
+  const { data: playersWithStats, error } = useSWR(
+    ["getAllPlayers", "getAllStats"],
+    async () => {
       const { allPlayers: players } = await getAllPlayers();
       const { allStats: stats } = await getAllStats();
-
-      if (players && stats) {
-        const playersWithStats = formatPlayersWithStats(players, stats);
-        // console.log(formattedPlayers);
-        setRowData(playersWithStats);
-      }
+  
+      return formatPlayersWithStats(players, stats);
     }
-    fetchData();
-  }, []);
+  );
+  
+  useEffect(() => {
+    if (playersWithStats) {
+      setRowData(playersWithStats);
+    }
+  }, [playersWithStats]);
 
   //playersWithStats
   const prepareValueChangesData = (playerId) => {

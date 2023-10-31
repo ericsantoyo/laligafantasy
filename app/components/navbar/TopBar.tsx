@@ -127,13 +127,6 @@ const TopBar = (props: Props) => {
           </div>
         </div>
         <SheetContent className=" w-[370px] sm:w-[370px] p-0 flex flex-col">
-          {/* <SheetGames
-            handlePrevWeek={handlePrevWeek}
-            selectedWeek={selectedWeek}
-            handleWeekChange={handleWeekChange}
-            handleNextWeek={handleNextWeek}
-            matches={matches}
-          /> */}
           <NewSheetGames/>
         </SheetContent>
       </Sheet>

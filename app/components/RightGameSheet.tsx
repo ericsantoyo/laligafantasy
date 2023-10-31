@@ -34,9 +34,7 @@ const getCurrentWeek = (matchesData) => {
       return match.week;
     }
 
-    const allMatchesForWeek = matchesData.filter(
-      (m) => m.week === match.week
-    );
+    const allMatchesForWeek = matchesData.filter((m) => m.week === match.week);
     const allMatchesFinished = allMatchesForWeek.every(
       (m) => m.matchState === 7
     );
@@ -86,122 +84,157 @@ const MatchesPage: React.FC = () => {
     setSelectedWeek((prevWeek) => Math.min(38, prevWeek + 1));
   };
 
-  
-
   // Displaying skeleton while loading
   if (isLoading) {
     return (
-      <div>
-        <h1>All Matches</h1>
-        <div className="grid grid-cols-2">
-          {Array.from({ length: 6 }, (_, index) => (
+      <div className="flex flex-col justify-start items-center h-full overflow-y-auto">
+        <div className="flex flex-row justify-center items-center w-full mt-5">
+          <p className="text-xl font-semibold">PARTIDOS</p>
+        </div>
+
+        <div className="flex justify-between items-center m-auto mt-4 mb-5 gap-4">
+          <IconButton onClick={handlePrevWeek}>
+            <ChevronLeftIcon />
+          </IconButton>
+          <Select
+            value={selectedWeek}
+            onValueChange={handleWeekChange}
+            disabled
+          >
+            <SelectTrigger>
+              <SelectValue>{`Jornada ${selectedWeek}`}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 38 }, (_, index) => (
+                <SelectItem key={index + 1} value={index + 1}>
+                  {`Jornada ${index + 1}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <IconButton onClick={handleNextWeek}>
+            <ChevronRightIcon />
+          </IconButton>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mx-auto">
+          {/* Display matches for the selected week */}
+          {Array.from({ length: 10 }, (_, index) => (
             <div key={index}>
-              <div className="w-[150px] h-full flex flex-col items-center space-x-2">
-                <Skeleton className="h-2 w-8" />
-                <div className="flex flex-row justify-between items-center text-center space-x-2">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="flex space-x-1">
-                    <Skeleton className="h-7 w-4" />
-                    <Skeleton className="h-7 w-4" />
+              <Paper
+                elevation={2}
+                className="flex flex-col justify-between items-center w-[150px] h-full py-1 text-center"
+              >
+                <Skeleton className="h-[8px] w-7 mb-2" />
+                <div className="flex flex-row justify-between w-full items-center ">
+                  <Skeleton className="h-7 ml-3 w-7 rounded-full" />
+                  <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center gap-1">
+                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="h-2 w-2" />
+                      <Skeleton className="h-4 w-4" />
+                    </div>
                   </div>
-                  <Skeleton className="h-12 w-12 rounded-full" />
+
+                  <Skeleton className="h-7 mr-3 rounded-full w-7" />
                 </div>
-                <Skeleton className="h-2 w-8" />
-              </div>
+                <Skeleton className="h-[9px] w-7 mt-2" />
+              </Paper>
             </div>
           ))}
         </div>
       </div>
     );
   }
-  
-  
 
   // Displaying matches
   return (
-    <div className="flex flex-col justify-start items-center h-full overflow-y-auto">
-      <div className="flex flex-row justify-center items-center w-full mt-5">
-        <p className="text-xl font-semibold">PARTIDOS</p>
-      </div>
+    
+      <div className="flex flex-col justify-start items-center h-full overflow-y-auto">
+        <div className="flex flex-row justify-center items-center w-full mt-5">
+          <p className="text-xl font-semibold">PARTIDOS</p>
+        </div>
 
-      <div className="flex justify-between items-center m-auto mt-4 mb-5 gap-4">
-        <IconButton onClick={handlePrevWeek}>
-          <ChevronLeftIcon />
-        </IconButton>
-        <Select value={selectedWeek} onValueChange={handleWeekChange}>
-          <SelectTrigger>
-            <SelectValue>{`Jornada ${selectedWeek}`}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 38 }, (_, index) => (
-              <SelectItem key={index + 1} value={index + 1}>
-                {`Jornada ${index + 1}`}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex justify-between items-center m-auto mt-4 mb-5 gap-4">
+          <IconButton onClick={handlePrevWeek}>
+            <ChevronLeftIcon />
+          </IconButton>
+          <Select value={selectedWeek} onValueChange={handleWeekChange}>
+            <SelectTrigger>
+              <SelectValue>{`Jornada ${selectedWeek}`}</SelectValue>
+            </SelectTrigger>
+            <SelectContent className="max-h-[var(--radix-select-content-available-height)]">
+              {Array.from({ length: 38 }, (_, index) => (
+                <SelectItem key={index + 1} value={index + 1}>
+                  {`Jornada ${index + 1}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <IconButton onClick={handleNextWeek}>
-          <ChevronRightIcon />
-        </IconButton>
-      </div>
+          <IconButton onClick={handleNextWeek}>
+            <ChevronRightIcon />
+          </IconButton>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4 mx-auto">
-        {/* Display matches for the selected week */}
-        {matches &&
-          matches.allMatches
-            .filter((match) => match.week === selectedWeek)
-            .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
-            .map((match) => (
-              <div key={match.matchID}>
-                <Paper
-                  elevation={2}
-                  className="flex flex-col justify-between items-center w-[150px] h-full py-1 text-center"
-                >
-                  <p className="text-[11px]">
-                    {new Date(match.matchDate).toLocaleDateString("es-EU", {
-                      weekday: "short",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <div className="flex flex-row justify-between items-center text-center">
-                    <Image
-                      src={`/teamLogos/${slugById(match.localTeamID)}.png`}
-                      alt="home"
-                      width={48}
-                      height={48}
-                      style={{ objectFit: "contain" }}
-                      className="h-7 mr-3"
-                    />
-                    <div className="flex flex-col justify-center items-center">
-                      <div className="flex">
-                        <p className="font-semibold">{match.localScore}</p>
-                        <p className="mx-1">-</p>
-                        <p className="font-semibold">{match.visitorScore}</p>
+        <div className="grid grid-cols-2 gap-4 mx-auto">
+          {/* Display matches for the selected week */}
+          {matches &&
+            matches.allMatches
+              .filter((match) => match.week === selectedWeek)
+              .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
+              .map((match) => (
+                <div key={match.matchID}>
+                  <Paper
+                    elevation={2}
+                    className="flex flex-col justify-between items-center w-[150px] h-full py-1 text-center"
+                  >
+                    <p className="text-[11px]">
+                      {new Date(match.matchDate).toLocaleDateString("es-EU", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <div className="flex flex-row justify-between items-center text-center">
+                      <Image
+                        src={`/teamLogos/${slugById(match.localTeamID)}.png`}
+                        alt="home"
+                        width={48}
+                        height={48}
+                        style={{ objectFit: "contain" }}
+                        className="h-7 mr-3"
+                      />
+                      <div className="flex flex-col justify-center items-center">
+                        <div className="flex">
+                          <p className="font-semibold">{match.localScore}</p>
+                          <p className="mx-1">-</p>
+                          <p className="font-semibold">{match.visitorScore}</p>
+                        </div>
                       </div>
+                      <Image
+                        src={`/teamLogos/${slugById(match.visitorTeamID)}.png`}
+                        alt="home"
+                        width={48}
+                        height={48}
+                        style={{ objectFit: "contain" }}
+                        className="h-7 ml-3"
+                      />
                     </div>
-                    <Image
-                      src={`/teamLogos/${slugById(match.visitorTeamID)}.png`}
-                      alt="home"
-                      width={48}
-                      height={48}
-                      style={{ objectFit: "contain" }}
-                      className="h-7 ml-3"
-                    />
-                  </div>
-                  <p className="text-[11px]">
-                    {new Date(match.matchDate).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
-                </Paper>
-              </div>
-            ))}
+                    <p className="text-[11px]">
+                      {new Date(match.matchDate).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </p>
+                  </Paper>
+                </div>
+              ))}
+        </div>
       </div>
-    </div>
+  
   );
 };
 

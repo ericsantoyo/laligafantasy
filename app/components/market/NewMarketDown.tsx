@@ -17,6 +17,9 @@ import { ChevronsDown, ChevronsUp } from "lucide-react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
+import { Skeleton } from "@/components/ui/skeleton";
+import useSWR from "swr";
+
 import {
   Table,
   TableBody,
@@ -70,6 +73,9 @@ const NewMarketDown = () => {
   //   );
   // }, [theme]);
 
+  //changeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+  
   function formatPlayersWithStats(players, stats) {
     const formattedPlayers = [];
 
@@ -83,20 +89,21 @@ const NewMarketDown = () => {
     return formattedPlayers;
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      // setIsLoading(true);
+  const { data: playersWithStats, error } = useSWR(
+    ["getAllPlayers", "getAllStats"],
+    async () => {
       const { allPlayers: players } = await getAllPlayers();
       const { allStats: stats } = await getAllStats();
-
-      if (players && stats) {
-        const playersWithStats = formatPlayersWithStats(players, stats);
-        // console.log(formattedPlayers);
-        setRowData(playersWithStats);
-      }
+  
+      return formatPlayersWithStats(players, stats);
     }
-    fetchData();
-  }, []);
+  );
+  
+  useEffect(() => {
+    if (playersWithStats) {
+      setRowData(playersWithStats);
+    }
+  }, [playersWithStats]);
 
   //playersWithStats
   const prepareValueChangesData = (playerId) => {
@@ -448,6 +455,7 @@ const NewMarketDown = () => {
           </Fade>
         </Modal>
       )}
+      
       <Paper
         elevation={4}
         id="grid-wrapper"
