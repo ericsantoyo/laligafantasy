@@ -1,5 +1,4 @@
-"use client";
-import React, { useEffect, useState } from "react";
+
 import GamesIcon from "@/app/components/navbar/GamesIcon";
 import Logo from "@/app/components/navbar/Logo";
 import SearchBox from "@/app/components/navbar/SearchBox";
@@ -37,12 +36,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 type Props = {};
 
 const TopBar = (props: Props) => {
-  const [navbar, setNavbar] = useState(false);
-
   const handleSearch = (query: string) => {};
-  const handleHamburgerClick = () => {
-    setNavbar(!navbar);
-  };
 
   return (
     <>
@@ -54,7 +48,6 @@ const TopBar = (props: Props) => {
       >
         {/* --- GAMES ICON --- */}
         <div className="md:order-2 shrink-0 md:ml-4">
-          {/* <GamesIcon onClick={handleDrawerOpen} className="" /> */}
           <Sheet>
             <SheetTrigger asChild>
               <GamesIcon className="" />
@@ -71,14 +64,14 @@ const TopBar = (props: Props) => {
         </div>
 
         {/* --- HAMBURGER MENU --- */}
-        <div className="md:hidden shrink-0">
-          <Sheet>
+        <Sheet>
+          <div className="md:hidden shrink-0">
             <SheetTrigger asChild>
               <IconButton
                 size="large"
                 className="w-12 h-12 "
                 sx={{
-                  boxShadow: 1,
+                  boxShadow: 2,
                   borderRadius: 1,
                 }}
               >
@@ -88,47 +81,28 @@ const TopBar = (props: Props) => {
                   className="transition-all dark:text-neutral-300 "
                 />
               </IconButton>
-              {/* <Hamburger
-                onHamburgerClick={handleHamburgerClick}
-                navbar={navbar}
-                className="invert dark:invert-0 "
-              /> */}
             </SheetTrigger>
-            <SheetContent className=" w-[350px] h-full p-0 flex flex-col bg-neutral-50  shadow-lg shadow-neutral-500">
-            <div
-            className={`transition-all flex flex-row justify-between items-center w-full space-x-3
-            ${navbar ? "py-4 " : "  "} `}
-          >
-       
-            <SearchBox
-              className={`${navbar ? " grow " : "  "}`}
-              onSearch={handleSearch}
-            />
-         
-            <SocialIcons className=" shrink-0 " />
-       
           </div>
-
-            </SheetContent>
-          </Sheet>
-        </div>
+          <SheetContent
+            side={"top"}
+            className=" flex flex-row justify-between items-center pr-14"
+          >
+            <SearchBox className={``} onSearch={handleSearch} />
+            <SocialIcons className=" shrink-0 " />
+          </SheetContent>
+        </Sheet>
 
         <div
           className={`
           transition-all md:flex md:flex-row justify-between md:items-center  w-full md:w-auto flex-nowrap 
-            ${
-              navbar ? "flex flex-col justify-between items-center" : "hidden "
+             flex-col items-center" hidden
             }`}
         >
           <div
-            className={`transition-all flex flex-row justify-between items-center w-full space-x-3
-            ${navbar ? "py-4 " : "  "} `}
+            className={`transition-all flex flex-row justify-between items-center w-full space-x-3 py-4  `}
           >
             {/* SEARCHBOX */}
-            <SearchBox
-              className={`${navbar ? " grow " : "  "}`}
-              onSearch={handleSearch}
-            />
+            <SearchBox className={`grow `} onSearch={handleSearch} />
             {/* SOCIALS */}
             <SocialIcons className=" shrink-0 " />
             {/* THEMETOGGLE */}
@@ -151,10 +125,7 @@ const TopBar = (props: Props) => {
 
           {/* TEXT MENU */}
           <TextItems
-            classNameDiv={`${
-              navbar
-                ? "hidden "
-                : "order-last md:order-first md:flex md:flex-row md:flex-nowrap font-semibold "
+            classNameDiv={`hidden order-last md:order-first md:flex md:flex-row  md:flex-nowrap font-semibold 
             }`}
             classNameUL={""}
             classNameLI={""}
