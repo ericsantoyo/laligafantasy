@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 import SearchFilters from "@/app/components/stats/SearchFilters"
 import { slugById } from "@/utils/utils";
-import MatchesPage from "../components/RightGameSheet";
+
 
 type Props = {};
 
@@ -35,7 +35,7 @@ export default async function NewsPage({searchParams,}: {searchParams: { [key: s
 
   return (
     <div className="flex flex-col justify-center px-4 w-full">
-      <MatchesPage />
+    
 
     </div>
   );

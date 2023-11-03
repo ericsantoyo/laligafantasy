@@ -6,7 +6,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 
 type Props = {
   className?: string;
-  // onHamburgerClick: () => void;
+  onHamburgerClick: () => void;
   navbar: boolean;
 };
 

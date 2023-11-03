@@ -36,6 +36,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { slugById } from "@/utils/utils";
+import { Card, CardFooter } from "@/components/ui/card";
 
 const getColor = (points) => {
   if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
@@ -75,7 +76,6 @@ const NewMarketDown = () => {
 
   //changeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
-  
   function formatPlayersWithStats(players, stats) {
     const formattedPlayers = [];
 
@@ -94,11 +94,11 @@ const NewMarketDown = () => {
     async () => {
       const { allPlayers: players } = await getAllPlayers();
       const { allStats: stats } = await getAllStats();
-  
+
       return formatPlayersWithStats(players, stats);
     }
   );
-  
+
   useEffect(() => {
     if (playersWithStats) {
       setRowData(playersWithStats);
@@ -132,7 +132,7 @@ const NewMarketDown = () => {
       }
 
       // Reverse the array to display the most recent changes first
-      const last20ValueChanges = playerValueChanges.reverse().slice(0, 14); // Slice to include only the last 20 entries
+      const last20ValueChanges = playerValueChanges.reverse().slice(0, 30); // Slice to include only the last 20 entries
 
       return last20ValueChanges;
     }
@@ -306,15 +306,8 @@ const NewMarketDown = () => {
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-            <Paper
-              variant="outlined"
-              // sx={style}
-              className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md "
-            >
-              <Paper
-                elevation={1}
-                className="p-4 flex flex-row justify-between items-center rounded-md "
-              >
+            <Card className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md ">
+              <Card className="p-4 flex flex-row justify-between items-center rounded-md ">
                 <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
                     <div className="flex flex-row justify-center items-center gap-x-2">
@@ -390,72 +383,74 @@ const NewMarketDown = () => {
                     className="h-6 w-auto"
                   />
                 </div>
-              </Paper>
-              <Table className="m-auto w-auto mt-4">
-                <TableCaption className="text-xs font-extralight">
-                  Cambios de Valor (Ultimos 14 Dias)
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="h-2 font-extrabold text-left w-[100px] text-xs">
-                      Fecha
-                    </TableHead>
-                    <TableHead className="h-2 font-extrabold text-center text-xs">
-                      $ Cambio
-                    </TableHead>
-                    <TableHead className="h-2 font-extrabold text-right text-xs">
-                      $ Actual
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {prepareValueChangesData(
-                    selectedPlayer.playerData.playerID
-                  ).map((change, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="text-left py-[4px]  text-xs">
-                        {formatDate(change.date)}
-                      </TableCell>
-                      <TableCell
-                        className={`py-[4px] flex flex-row justify-end items-center text-xs`}
-                      >
-                        <div
-                          className={`flex justify-center items-center h-full font-bold
-               ${
-                 change.valueChange < 0
-                   ? "text-red-500 dark:text-red-400 h-full"
-                   : "text-green-600 dark:text-green-400 h-full"
-               }`}
-                        >
-                          {formatMoney(change.valueChange)}
-                        </div>
-                        <div
-                          className={`flex justify-center items-center h-full ml-2
-               ${
-                 change.valueChange < 0
-                   ? "text-red-500 dark:text-red-400 "
-                   : "text-green-600 dark:text-green-400"
-               }`}
-                        >
-                          {change.valueChange < 0 ? (
-                            <ChevronsDown size={14} />
-                          ) : (
-                            <ChevronsUp size={14} />
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-[4px] text-right text-xs">
-                        {formatMoney(change.newValue)}
-                      </TableCell>
+              </Card>
+              <Card className="h-[416px] pt-2 flex flex-col justify-between items-center rounded-md border-none shadow-none">
+                <Table className="m-auto w-auto mt-4">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="h-2 font-extrabold text-left w-[100px] text-xs">
+                        Fecha
+                      </TableHead>
+                      <TableHead className="h-2 font-extrabold text-center text-xs">
+                        $ Cambio
+                      </TableHead>
+                      <TableHead className="h-2 font-extrabold text-right text-xs">
+                        $ Actual
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Paper>
+                  </TableHeader>
+                  <TableBody>
+                    {prepareValueChangesData(
+                      selectedPlayer.playerData.playerID
+                    ).map((change, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="text-left py-[4px]  text-xs">
+                          {formatDate(change.date)}
+                        </TableCell>
+                        <TableCell
+                          className={`py-[4px] flex flex-row justify-end items-center text-xs`}
+                        >
+                          <div
+                            className={`flex justify-center items-center h-full font-bold
+          ${
+            change.valueChange < 0
+              ? "text-red-500 dark:text-red-400 h-full"
+              : "text-green-600 dark:text-green-400 h-full"
+          }`}
+                          >
+                            {formatMoney(change.valueChange)}
+                          </div>
+                          <div
+                            className={`flex justify-center items-center h-full ml-2
+          ${
+            change.valueChange < 0
+              ? "text-red-500 dark:text-red-400 "
+              : "text-green-600 dark:text-green-400"
+          }`}
+                          >
+                            {change.valueChange < 0 ? (
+                              <ChevronsDown size={14} />
+                            ) : (
+                              <ChevronsUp size={14} />
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-[4px] text-right text-xs">
+                          {formatMoney(change.newValue)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <CardFooter className="pt-4 pb-0 text-xs  font-extralight">
+                  Cambios de Valor (Ultimos 30 Dias)
+                </CardFooter>
+              </Card>
+            </Card>
           </Fade>
         </Modal>
       )}
-      
+
       <Paper
         elevation={4}
         id="grid-wrapper"
@@ -467,10 +462,14 @@ const NewMarketDown = () => {
         {/* Search Bar */}
         <Box className="flex flex-row justify-between items-center w-full h-16 px-3">
           <span className="flex justify-center items-center md:text-lg font-semibold mr-2 w-full text-center">
-            <ChevronsDown size={24} className="mr-2" /> Ultimas Bajadas
+            <ChevronsDown
+              size={24}
+              className="mr-2 text-red-500 dark:text-red-400 "
+            />{" "}
+            Ultimas Bajadas
           </span>
           <div className="relative w-full">
-            <Search className="absolute h-4 w-4 top-3 left-4 text-muted-foreground" />
+            <Search className="absolute h-4 w-4 top-[10px] left-4 text-muted-foreground" />
             <Input
               type="search"
               onChange={onFilterTextChange}
