@@ -69,7 +69,7 @@ const TopBar = (props: Props) => {
             <SheetTrigger asChild>
               <IconButton
                 size="large"
-                className="w-12 h-12 "
+                className="w-12 h-12 group"
                 sx={{
                   boxShadow: 2,
                   borderRadius: 1,
@@ -78,7 +78,7 @@ const TopBar = (props: Props) => {
                 <MenuIcon
                   fontSize="large"
                   sx={{}}
-                  className="transition-all dark:text-neutral-300 "
+                  className="transition-all group-hover:scale-110 dark:text-neutral-300 "
                 />
               </IconButton>
             </SheetTrigger>

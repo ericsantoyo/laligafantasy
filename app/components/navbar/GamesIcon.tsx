@@ -22,7 +22,7 @@ const GamesIcon = (props: Props) => {
       >
         <div className="flex justify-center items-center ">
           <svg
-          className="transition-all group-hover:scale-110 md:w-6 w-8"
+          className="transition-all group-hover:grayscale  md:w-6 w-8"
            
             viewBox="0 0 70 64"
             fill="none"

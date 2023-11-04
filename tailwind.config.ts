@@ -11,6 +11,11 @@ const config: Config = {
   darkMode: ["class"],
   theme: {
     extend: {
+      invert: {
+        25: '.25',
+        50: '.5',
+        75: '.75',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
