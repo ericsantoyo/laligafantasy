@@ -10,6 +10,7 @@ import tableSubidasBajadas from "@/app/components/market/tableProps/tableSubidas
 import tablePlayerNames from "@/app/components/market/tableProps/tablePlayerNames";
 import tablePlayerImg from "@/app/components/market/tableProps/tablePlayerImg";
 import { getAllPlayers, getAllStats } from "@/database/client";
+import { getColor, formatDate, formatMoney, getWeeksTotalPointsFromStats } from "@/utils/utils";
 // import { useTheme } from "next-themes";
 import Image from "next/image";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
@@ -36,26 +37,6 @@ import { slugById } from "@/utils/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import useSWR from "swr";
 import { Card, CardFooter } from "@/components/ui/card";
-
-const getColor = (points) => {
-  if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
-  if (points >= 5) return "bg-green-500 text-neutral-50 font-bold text-shadow";
-  if (points >= 2) return "bg-orange-500 text-neutral-50 font-bold text-shadow";
-  if (points >= 0) return "bg-red-500 text-neutral-50 font-bold text-shadow";
-  return "bg-red-700 text-neutral-50 font-bold text-shadow";
-};
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { month: "short", day: "numeric" };
-  return date.toLocaleDateString(undefined, options);
-}
-
-function formatMoney(value) {
-  const formatter = new Intl.NumberFormat("en-GB", {});
-  const formattedValue = formatter.format(value);
-  return formattedValue;
-}
 
 const NewMarketUp = () => {
   const [rowData, setRowData] = useState();
@@ -241,45 +222,6 @@ const NewMarketUp = () => {
     gridApi.setQuickFilter(e.target.value);
   };
 
-  function getWeeksTotalPointsFromStats(playerId) {
-    const selectedPlayerData = rowData.find(
-      (player) => player.playerData.playerID === playerId
-    );
-    const player = selectedPlayerData.playerData;
-    const stats = selectedPlayerData.stats;
-    const maxWeeks = 6; // Maximum number of weeks to display
-    // console.log(stats);
-    let points = [];
-
-    // Create a map to store points by week
-    const pointsByWeek = new Map();
-
-    // Calculate points for each week from the player's stats
-    for (const stat of stats) {
-      const week = stat.week;
-      const totalPoints = stat.totalPoints;
-
-      // Update the points for the corresponding week
-      pointsByWeek.set(week, totalPoints);
-    }
-
-    // Determine the maximum week
-    let maxWeek = Math.max(...stats.map((stat) => stat.week));
-    // console.log(maxWeek);
-    // Get the last 5 weeks (or fewer if less than 5 weeks of data)
-    for (let i = maxWeek; i > maxWeek - maxWeeks && i >= 1; i--) {
-      points.push({
-        week: i,
-        points: pointsByWeek.get(i) || 0, // Use 0 if there are no stats for the week
-      });
-    }
-
-    // Sort points by week in ascending order
-    points.sort((a, b) => a.week - b.week);
-    // console.log(points);
-    return points;
-  }
-
   return (
     <>
       {selectedPlayer && (
@@ -332,7 +274,9 @@ const NewMarketUp = () => {
                     </div>
                     <div className="flex flex-row items-center gap-x-1">
                       {getWeeksTotalPointsFromStats(
-                        selectedPlayer.playerData.playerID
+                        selectedPlayer.playerData.playerID,
+                        rowData,
+                        6
                       ).map((point) => (
                         <div
                           className="flex flex-col justify-center items-center "
@@ -383,7 +327,6 @@ const NewMarketUp = () => {
               </Card>
               <Card className="h-[416px] pt-2 flex flex-col justify-between items-center rounded-md border-none shadow-none">
                 <Table className="m-auto w-auto mt-4">
-              
                   <TableHeader>
                     <TableRow>
                       <TableHead className="h-2 font-extrabold text-left w-[100px] text-xs">

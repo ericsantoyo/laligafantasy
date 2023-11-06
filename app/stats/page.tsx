@@ -8,28 +8,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 import SearchFilters from "@/app/components/stats/SearchFilters"
-import { slugById } from "@/utils/utils";
+import { formatter, getColor, getWeeksTotalPointsFromStats, lastChangeStyle, slugById } from "@/utils/utils";
 
-// function getRevalidateInterval(): number {
-//   // Get the current time
-//   const currentTime = new Date();
-  
-//   // Define revalidation intervals
-//   let revalidateInterval = 60 * 60; // 1 hour by default
-  
-//   // Check if the current time is within the specified window (CEST 00:00 to CEST 00:30)
-//   if (
-//     currentTime.getUTCHours() === 22 && // 00:00 CEST in UTC
-//     currentTime.getUTCMinutes() >= 0 &&
-//     currentTime.getUTCMinutes() <= 30
-//   ) {
-//     revalidateInterval = 60; // 1 minute within the specified window
-//   }
-
-//   return revalidateInterval;
-// }
-
-// Export revalidate constant with the condition
 export const revalidate = 0;
 
 type Props = {};
@@ -83,45 +63,7 @@ function getPositionBadge(positionID: number): JSX.Element {
   }
 }
 
-function getWeeksTotalPointsFromStats(player) {
-  const stats = player.stats;
-  const maxWeeks = 5; // Maximum number of weeks to display
-  // console.log(stats);
-  let points = [];
 
-  // Create a map to store points by week
-  const pointsByWeek = new Map();
-
-  // Calculate points for each week from the player's stats
-  for (const stat of stats) {
-    const week = stat.week;
-    const totalPoints = stat.totalPoints;
-
-    // Update the points for the corresponding week
-    pointsByWeek.set(week, totalPoints);
-  }
-
-  // Determine the maximum week
-  let maxWeek = Math.max(...stats.map((stat) => stat.week));
-  // console.log(maxWeek);
-  // Get the last 5 weeks (or fewer if less than 5 weeks of data)
-  for (let i = maxWeek; i > maxWeek - maxWeeks && i >= 1; i--) {
-    points.push({
-      week: i,
-      points: pointsByWeek.get(i) || 0, // Use 0 if there are no stats for the week
-    });
-  }
-
-  // Sort points by week in ascending order
-  points.sort((a, b) => a.week - b.week);
-
-  return points;
-}
-
-//To format the value
-const formatter = new Intl.NumberFormat("en-GB", {});
-
-//To get the teamSlugs by teamID
 
 
 StatsPage.defaultProps = {
@@ -147,6 +89,8 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
     teamID: team,
   });
   const { allStats: fetchedStats } = await getAllStats();
+
+  
   const { allTeams: fetchedTeams } = await getAllTeams();
 
   function formatPlayersWithStats(players, stats) {
@@ -164,24 +108,13 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
 
   const playersWithStats = formatPlayersWithStats(fetchedPlayers, fetchedStats);
 
-  const getColor = (points) => {
-    if (points >= 10)
-      return "bg-green-600 text-neutral-50 font-bold text-shadow";
-    if (points >= 5)
-      return "bg-green-500 text-neutral-50 font-bold text-shadow";
-    if (points >= 2)
-      return "bg-orange-500 text-neutral-50 font-bold text-shadow";
-    if (points >= 0) return "bg-red-500 text-neutral-50 font-bold text-shadow";
-    return "bg-red-700 text-neutral-50 font-bold text-shadow";
-  };
 
-  const lastChangeStyle = (lastChange) => {
-    if (lastChange >= 0) return " text-green-600 dark:text-green-400";
-    return "text-red-500";
-  };
+
+ 
 
   return (
     <div className="flex flex-col justify-center px-4 w-full">
+      {/* <pre> {JSON.stringify(fetchedPlayers, null, 2)}</pre> */}
       {/* <h1 className="text-xl font-bold text-center">STATS Page</h1> */}
       <SearchFilters />
       {/* PLAYERS GRID */}
@@ -249,7 +182,11 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
                 </div>
               </Link>
               <div className="flex flex-row justify-between items-center gap-1">
-                {getWeeksTotalPointsFromStats(player).map((point) => (
+              {getWeeksTotalPointsFromStats(
+                player.playerData.playerID,
+                playersWithStats,
+                6
+                ).map((point) => (
                   <div
                     className="flex flex-col justify-center items-center "
                     key={point.week}

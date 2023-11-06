@@ -5,8 +5,6 @@ type Player = object;
 type Stat = object;
 type Team = object;
 
-
-
 async function getAllPlayers(): Promise<{ allPlayers: Player[] }> {
   const { data: allPlayers } = await supabase
     .from("players")
@@ -16,48 +14,43 @@ async function getAllPlayers(): Promise<{ allPlayers: Player[] }> {
 }
 
 async function getPaginatedPlayers({
-    teamID,
-    playerName,
-    page = 1,
-    limit = 12,
-  }: {
-    teamID?: number;
-    playerName?: string;
-    page: number;
-    limit: number;
-  }): Promise<{ paginatedPlayers: Player[]; totalCount: number }> {
-    //imitate delay
-    
-  
-      let request = supabase.from("players").select("*");
-  
-      if (teamID !== undefined) {
-        request = request.eq("teamID", teamID);
-      }
-  
-      if (playerName) {
-        request = request.ilike("nickname", `%${playerName}%`); // This filters the players by the name using ILIKE
-      }
-  
-      const { data: paginatedPlayers, count } = await request
-        .order("points", { ascending: false })
-        .range(page * limit - limit, page * limit - 1);
-  
-      return { paginatedPlayers, totalCount: count };
-    } 
-  
-  
-  
+  teamID,
+  playerName,
+  page = 1,
+  limit = 12,
+}: {
+  teamID?: number;
+  playerName?: string;
+  page: number;
+  limit: number;
+}): Promise<{ paginatedPlayers: Player[]; totalCount: number }> {
+  //imitate delay
+
+  let request = supabase.from("players").select("*");
+
+  if (teamID !== undefined) {
+    request = request.eq("teamID", teamID);
+  }
+
+  if (playerName) {
+    request = request.ilike("nickname", `%${playerName}%`); // This filters the players by the name using ILIKE
+  }
+
+  const { data: paginatedPlayers, count } = await request
+    .order("points", { ascending: false })
+    .range(page * limit - limit, page * limit - 1);
+
+  return { paginatedPlayers, totalCount: count };
+}
 
 async function getAllStats(): Promise<{ allStats: Stat[] }> {
   const { data: allStats } = await supabase
     .from("stats")
     .select("*")
     .order("week", { ascending: false });
-  
+
   return { allStats };
 }
-
 
 async function getAllTeams(): Promise<{ allTeams: Team[] }> {
   const { data: allTeams } = await supabase.from("teams").select("*");
@@ -94,15 +87,14 @@ async function getPlayerById(
 }
 
 async function getTeamByTeamID(teamID) {
-  if(!teamID) return { data: null, error: "No teamID provided"}
+  if (!teamID) return { data: null, error: "No teamID provided" };
   const { data, error } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('teamID', teamID)
+    .from("teams")
+    .select("*")
+    .eq("teamID", teamID);
 
   return { data, error };
 }
-
 
 async function getPlayersByTeamID(
   teamID: number
@@ -117,17 +109,29 @@ async function getPlayersByTeamID(
 }
 
 async function getAllMatches(): Promise<{ allMatches: Matches[] }> {
-  //imitate delay 
+  //imitate delay
   // await new Promise((resolve) => setTimeout(resolve, 3000));
- 
 
   const { data: allMatches } = await supabase
     .from("matches")
     .select("*")
     .order("matchID", { ascending: false });
   return { allMatches };
-
 }
+
+async function getMatchesByTeamID(teamID: number) {
+  if (!teamID)
+    return { data: null, error: "No teamID provided for getMatchesByTeamID" };
+
+  const { data, error } = await supabase
+    .from("matches")
+    .select("*")
+    .or(`localTeamID.eq.${teamID}, visitorTeamID.eq.${teamID}`)
+    .order("matchDate", { ascending: true }); 
+
+  return { data, error };
+}
+
 
 
 export {
@@ -139,4 +143,5 @@ export {
   getPlayersByTeamID,
   getPaginatedPlayers,
   getAllMatches,
+  getMatchesByTeamID,
 };

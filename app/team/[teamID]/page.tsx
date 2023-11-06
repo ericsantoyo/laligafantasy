@@ -5,101 +5,34 @@ import {
   getTeamByTeamID,
   getPlayersByTeamID,
 } from "@/database/client";
-import TeamLayout from "@/app/components/team/TeamLayout"
-import Paper from "@mui/material/Paper";
-import Image from "next/image";
+import TeamLayout from "@/app/components/team/TeamRoster";
 
-const formatter = new Intl.NumberFormat("en-GB", {});
+import TeamInfoCard from "@/app/components/team/TeamInfoCard";
 
-
-const TeamCard = ({ data }) => {
-  return (
-    
-    <Paper elevation={3} className="transition-all flex flex-col justify-center items-center w-full">
-      <div className="">
-        <Image
-          src={data.image}
-          alt={data.name}
-          width={80}
-          height={80}
-          className="h-20 w-auto "
-        />
-      </div>
-      <div className="">
-        {/* <p>Team name</p> */}
-        <h3 className="font-bold mx-auto	 ">
-          {data.name} ({data.nickname})
-        </h3>
-      </div>
-      <div className="flex">
-        <p>Total points:</p>
-        <h3>{data.totalPoints}</h3>
-      </div>
-      <div className="">
-        <p>Total market value</p>
-        <h3>{formatter.format(data.totalMarketValue)}</h3>
-      </div>
-      <div className="">
-        <p>Players Available</p>
-        <h3>
-          {data.numberOfAvailablePlayers} /{data.numberOfPlayers}
-        </h3>
-      </div>
-    </Paper>
-  );
-};
-
-export default async function Team({ params }) {
-  const { data: teamData, error }= await getTeamByTeamID(params.teamID);
+export default async function Team({ params }: { params: { teamID: number } }) {
+  const { data: teamData } = await getTeamByTeamID(params.teamID);
   const team = teamData[0];
   const { data: playersData } = await getPlayersByTeamID(params.teamID);
   const players = playersData;
   const { data: matchesData } = await getAllMatches();
   const matches = matchesData;
-  const { data: statsData } = await getAllStats();
-  const stats = statsData;
+  const { allStats: fetchedStats } = await getAllStats();
+  // const stats = fetchedStats;
 
-  const getTotalPointsOfTeam = () => {
-    let total = 0;
-    for (let player in players) {
-      if (players[player].status === "out_of_league") {
-        continue;
-      }
-      total += players[player].points;
-    }
-    return total;
-  };
+  function formatPlayersWithStats(players, stats) {
+    const formattedPlayers = [];
 
-  const getTotalMarketValueOfTeam = () => {
-    let total = 0;
-    for (let player in players) {
-      if (players[player].status === "out_of_league") {
-        continue;
-      }
-      total += players[player].marketValue;
+    for (const player of players) {
+      const playerStats = stats.filter(
+        (stat) => stat.playerID === player.playerID
+      );
+      formattedPlayers.push({ playerData: player, stats: playerStats });
     }
-    return total;
-  };
 
-  const getNumberOfPlayersOfTeam = () => {
-    let total = 0;
-    for (let player in players) {
-      if (players[player].status !== "out_of_league") {
-        total++;
-      }
-    }
-    return total;
-  };
+    return formattedPlayers;
+  }
 
-  const getNumberOfAvailablePlayersOfTeam = () => {
-    let total = 0;
-    for (let player in players) {
-      if (players[player].status === "ok") {
-        total++;
-      }
-    }
-    return total;
-  };
+  const playersWithStats = formatPlayersWithStats(playersData, fetchedStats);
 
   const getSortedPlayersByPoints = () => {
     let sorted = [...players];
@@ -109,25 +42,12 @@ export default async function Team({ params }) {
     return sorted;
   };
 
+  const sortedPlayers = getSortedPlayersByPoints();
 
   return (
     <div className=" flex flex-col gap-3">
-
-      <TeamCard
-        data={{
-          name: team.name,
-          nickname: team.nickname,
-          image: team.image,
-          totalPoints: getTotalPointsOfTeam(),
-          totalMarketValue: getTotalMarketValueOfTeam(),
-          numberOfPlayers: getNumberOfPlayersOfTeam(),
-          numberOfAvailablePlayers: getNumberOfAvailablePlayersOfTeam(),
-        }}
-      />
-
-      
-      {/* <pre className="">{JSON.stringify(playersData, null, 2)}</pre> */}
-      <TeamLayout allPlayersData={players} />
+      <TeamInfoCard teamInfo={team} playerInfo={players} />
+      <TeamLayout teamPlayers={sortedPlayers} playerStats={playersWithStats} />
     </div>
   );
 }
