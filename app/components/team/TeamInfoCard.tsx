@@ -48,10 +48,10 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }) {
 
   return (
     <>
-      <Card className="transition-all flex flex-row justify-between items-center p-4 text-xs md:text-sm rounded-sm">
-        <NextMatches matches={teamMatches} />
+      <Card className="transition-all flex flex-row justify-between items-center gap-8 p-4 text-xs md:text-sm rounded-sm">
+        <NextMatches matches={teamMatches} selectedTeam={teamInfo.teamID} />
         {/* <pre className="text-center">{JSON.stringify(teamMatches, null, 2)}</pre> */}
-        <div className="flex flex-col justify-betweem items-center">
+        <div className="order-first md:order-none flex flex-col justify-betweem items-center flex-initial  md:flex-none ">
           <Image
             src={teamInfo.image}
             alt={teamInfo.shortName}
@@ -67,10 +67,10 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }) {
 
           <div className="">
             {/* <p>Team name</p> */}
-            <p className="font-bold mx-auto	 ">{teamInfo.name}</p>
+            <p className="font-bold mx-auto	uppercase ">{teamInfo.name}</p>
           </div>
         </div>
-        <div className="flex flex-col justify-between items-start gap-2 ">
+        <div className="hidden md:flex flex-col justify-between items-start gap-2 ">
           <div className="flex flex-row justify-center items-center">
             <p className=" font-normal mr-2">Puntos:</p>
             <p className=" font-bold">{totalPoints}</p>

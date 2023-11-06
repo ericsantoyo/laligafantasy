@@ -34,11 +34,10 @@ const getCurrentWeek = (matchesData) => {
   for (const match of matchesData) {
     const matchDate = new Date(match.matchDate);
 
-    const formattedMatchDate = new Date(matchDate.toISOString());
-
     if (
-      today >= formattedMatchDate &&
-      today <= new Date(formattedMatchDate).setHours(23, 59, 59)
+      today.getDate() === matchDate.getDate() &&
+      today.getMonth() === matchDate.getMonth() &&
+      today.getFullYear() === matchDate.getFullYear()
     ) {
       return match.week;
     }
@@ -57,6 +56,7 @@ const getCurrentWeek = (matchesData) => {
   console.log("No matching week found, defaulting to week 1");
   return 1;
 };
+
 
 // Your component
 export default function GamesSheet() {
@@ -158,6 +158,7 @@ export default function GamesSheet() {
   // Displaying matches
   return (
     <div className="flex flex-col justify-start items-center h-full overflow-y-auto">
+
       <div className="flex flex-row justify-center items-center w-full mt-5">
         <p className="text-xl font-semibold">PARTIDOS</p>
       </div>
@@ -236,7 +237,9 @@ export default function GamesSheet() {
             ))}
       </div>
       <Separator className=" mt-4" />
-      
+      {/* <pre className="text-center">
+        {JSON.stringify(matches, null, 2)}
+      </pre> */}
     </div>
   );
 }

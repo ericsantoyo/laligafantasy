@@ -1,104 +1,132 @@
-
 import { Card } from "@/components/ui/card";
 import { slugById } from "@/utils/utils";
 import Image from "next/image";
+import HomeIcon from "@mui/icons-material/Home";
+import FlightIcon from "@mui/icons-material/Flight";
 
 interface Props {
   matches: any;
+  selectedTeam: number;
 }
 
-const getCurrentWeek = (matchesData) => {
-  const today = new Date();
+const getCurrentWeek = (matches: any[]): number => {
+  const now = new Date();
 
-  for (const match of matchesData) {
-    const matchDate = new Date(match.matchDate);
-
-    const formattedMatchDate = new Date(matchDate.toISOString());
-
-    if (
-      today >= formattedMatchDate &&
-      today <= new Date(formattedMatchDate).setHours(23, 59, 59)
-    ) {
-      return match.week;
-    }
-
-    const allMatchesForWeek = matchesData.filter((m) => m.week === match.week);
-    const allMatchesFinished = allMatchesForWeek.every(
-      (m) => m.matchState === 7
+  // Filter matches with matchState = 7 (finished) and sort them by matchDate in descending order
+  const finishedMatches = matches
+    .filter((match) => match.matchState === 7)
+    .sort(
+      (a, b) =>
+        new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime()
     );
 
-    if (allMatchesFinished) {
-      const nextWeek = match.week + 1;
-      return nextWeek;
+  if (finishedMatches.length === 0) {
+    // No finished matches, return the week of the next upcoming match
+    const upcomingMatches = matches
+      .filter((match) => match.matchState !== 7)
+      .sort(
+        (a, b) =>
+          new Date(a.matchDate).getTime() - new Date(b.matchDate).getTime()
+      );
+
+    if (
+      upcomingMatches.length > 0 &&
+      now.getTime() <=
+        new Date(upcomingMatches[0].matchDate).getTime() + 24 * 60 * 60 * 1000
+    ) {
+      // If today is within 1 day of the next upcoming match, return its week
+      return upcomingMatches[0].week;
+    }
+  } else {
+    // Return the week of the most recent finished match if it's within 1 day
+    if (
+      now.getTime() <=
+      new Date(finishedMatches[0].matchDate).getTime() + 24 * 60 * 60 * 1000
+    ) {
+      return finishedMatches[0].week;
+    } else {
+      // Return the week of the next upcoming match
+      const upcomingMatches = matches
+        .filter((match) => match.matchState !== 7)
+        .sort(
+          (a, b) =>
+            new Date(a.matchDate).getTime() - new Date(b.matchDate).getTime()
+        );
+
+      if (
+        upcomingMatches.length > 0 &&
+        now.getTime() <=
+          new Date(upcomingMatches[0].matchDate).getTime() + 24 * 60 * 60 * 1000
+      ) {
+        // If today is within 1 day of the next upcoming match, return its week
+        return upcomingMatches[0].week;
+      }
     }
   }
 
-  console.log("No matching week found, defaulting to week 1");
+  // Default to 1 if no matches are found
   return 1;
 };
 
-const NextMatches = ({ matches }: Props) => {
+const NextMatches = ({ matches, selectedTeam }: Props) => {
   const teamMatches = matches;
-  
-
-  const initialWeek = getCurrentWeek(matches);
-
+  const currentWeek = getCurrentWeek(teamMatches);
 
   return (
-    <div className=" ">
-      {/* Display matches for the selected week */}
-      {/* <pre className="text-center">
-          {JSON.stringify(teamMatches, null, 2)}
-        </pre> */}
-      {matches &&
-        matches
-          .filter((match) => match.week === initialWeek)
+    <div className=" flex flex-col flex-auto md:flex-none ">
+      <p className="text-center text-xs uppercase font-medium mb-2">
+        Próximos partidos
+      </p>
+      <div className=" flex flex-row justify-between items-center md:gap-2">
+        {/* Display matches for the selected week */}
+        {teamMatches
+          .filter(
+            (match) =>
+              match.week >= currentWeek && match.week <= currentWeek + 4
+          )
           .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
           .map((match) => (
             <div key={match.matchID}>
-              <Card className="flex flex-col justify-between items-center w-[155px] h-full py-[6px] text-center rounded-md">
+              <Card className="flex flex-col justify-between items-center border-none shadow-none h-full py-[6px] text-xs text-center rounded-md">
+                {match.localTeamID !== selectedTeam && (
+                  <Image
+                    src={`/teamLogos/${slugById(match.localTeamID)}.png`}
+                    alt="home"
+                    width={36}
+                    height={36}
+                    style={{ objectFit: "contain" }}
+                    className="h-6 "
+                  />
+                )}
+
+                {match.visitorTeamID !== selectedTeam && (
+                  <Image
+                    src={`/teamLogos/${slugById(match.visitorTeamID)}.png`}
+                    alt="visitor"
+                    width={36}
+                    height={36}
+                    style={{ objectFit: "contain" }}
+                    className="h-6 "
+                  />
+                )}
+
                 <p className="text-[10px] uppercase font-medium text-center">
                   {new Date(match.matchDate).toLocaleDateString("es-EU", {
-                    weekday: "short",
                     month: "short",
                     day: "numeric",
                   })}
                 </p>
-                <div className="flex flex-row justify-between items-center text-center w-full px-[2px]">
-                  <Image
-                    src={`/teamLogos/${slugById(match.localTeamID)}.png`}
-                    alt="home"
-                    width={48}
-                    height={48}
-                    style={{ objectFit: "contain" }}
-                    className="h-7 "
-                  />
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex">
-                      <p className="font-semibold">{match.localScore}</p>
-                      <p className="mx-1">-</p>
-                      <p className="font-semibold">{match.visitorScore}</p>
-                    </div>
-                  </div>
-                  <Image
-                    src={`/teamLogos/${slugById(match.visitorTeamID)}.png`}
-                    alt="home"
-                    width={48}
-                    height={48}
-                    style={{ objectFit: "contain" }}
-                    className="h-7 "
-                  />
+                <div className="opacity-80">
+                  {match.localTeamID !== selectedTeam ? (
+                    <FlightIcon className="rotate-45" />
+                  ) : (
+                    <HomeIcon />
+                  )}
                 </div>
-                <p className="text-[11px] uppercase font-medium text-center">
-                  {new Date(match.matchDate).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                </p>
               </Card>
             </div>
           ))}
+      </div>
     </div>
   );
 };
