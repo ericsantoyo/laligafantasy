@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  getColor,
+  
   formatDate,
   formatMoney,
   getWeeksTotalPointsFromStats,
@@ -12,6 +12,14 @@ import {
   getPositionBadge,
 } from "@/utils/utils";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
+
+const getColor = (points: number) => {
+  if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
+  if (points >= 5) return "bg-green-500 text-neutral-50 font-bold text-shadow";
+  if (points >= 2) return "bg-orange-500 text-neutral-50 font-bold text-shadow";
+  if (points >= 0) return "bg-red-500 text-neutral-50 font-bold text-shadow";
+  return "bg-red-700 text-neutral-50 font-bold text-shadow";
+};
 
 interface PlayerStats {
   statType: string;
@@ -71,18 +79,34 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
         {teamPlayers.map((player, index) => (
           <Link href={`/player/${player.playerID}`} key={index}>
             <Card className="rounded-none flex flex-row  items-center px-2 text-xs md:text-sm ">
-              <div className="flex flex-row justify-start items-center flex-none">
+              <div className="flex flex-row justify-start items-center ">
                 <Image
                   src={player.image}
-                  alt={player.name}
+                  alt={player.nickname}
                   width={48}
                   height={48}
-                  className=" w-12 h-12"
+                  className="w-10 h-10 md:w-12 md:h-12"
                 />
                 <div className="flex flex-col flex-1 ml-2">
-                  <p className="w-18 md:w-24 ">{player.nickname}</p>
+                  <p className="w-18 md:w-24">
+                    {/* {player.nickname.length > 13
+                      ? `${player.nickname.split(" ")[0].charAt(0)}. ${
+                          player.nickname.split(" ")[1]
+                        }`
+                      : player.nickname} */}
+
+                    {player.nickname.length > 13 &&
+                    player.nickname.includes(" ")
+                      ? `${player.nickname.split(" ")[0].charAt(0)}. ${
+                          player.nickname.split(" ")[1]
+                        }`
+                      : player.nickname.length <= 10 ||
+                        !player.nickname.includes(" ")
+                      ? player.nickname
+                      : player.nickname.split(" ")[1]}
+                  </p>
                   <div
-                    className={`md:hidden font-base text-[10px] text-start `}
+                    className={`md:hidden font-base text-[11px] font-light text-start `}
                   >
                     {formatter.format(player.marketValue)}
                   </div>
@@ -100,9 +124,9 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
                 {formatter.format(player.marketValue)}
               </p>
 
-              <div className="flex flex-col flex-1">
+              <div className="flex flex-col flex-1 ">
                 <div
-                  className={`font-semibold  text-end	 mx-4 ${lastChangeStyle(
+                  className={`font-semibold  text-end	text-xs md:text-sm mx-4 ${lastChangeStyle(
                     player.lastMarketChange
                   )}`}
                 >
@@ -114,7 +138,7 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
                   {formatter.format(player.marketValue)}
                 </div> */}
               </div>
-              <div className="flex flex-row items-center gap-x-1 w-[140px]">
+              <div className="flex flex-row justify-end items-center gap-x-1 w-[130px] md:w-[140px]">
                 {getWeeksTotalPointsFromStats(
                   player.playerID,
                   playerStats,
@@ -125,15 +149,17 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
                     key={point.week}
                   >
                     <div
-                      className={`text-center border-[0.5px] w-5 h-5 border-neutral-700   rounded-sm  flex justify-center items-center ${getColor(
+                      className={`text-center border-[0.5px] md:w-5 md:h-5 w-[18px] h-[18px] border-neutral-700   rounded-sm  flex justify-center items-center ${getColor(
                         point.points
                       )}`}
                     >
-                      <p className={`text-[12px] items-center align-middle`}>
+                      <p
+                        className={`text-[11px] md:text-xs items-center align-middle`}
+                      >
                         {point.points}
                       </p>
                     </div>
-                    <div className="text-center text-[11px]">J{point.week}</div>
+                    <div className="text-center text-[10px]">J{point.week}</div>
                   </div>
                 ))}
               </div>

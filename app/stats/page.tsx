@@ -8,13 +8,19 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 import SearchFilters from "@/app/components/stats/SearchFilters"
-import { formatter, getColor, getWeeksTotalPointsFromStats, lastChangeStyle, slugById } from "@/utils/utils";
+import { formatter, getWeeksTotalPointsFromStats, lastChangeStyle, slugById } from "@/utils/utils";
 
 export const revalidate = 0;
 
 type Props = {};
 
-
+const getColor = (points: number) => {
+  if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
+  if (points >= 5) return "bg-green-500 text-neutral-50 font-bold text-shadow";
+  if (points >= 2) return "bg-orange-500 text-neutral-50 font-bold text-shadow";
+  if (points >= 0) return "bg-red-500 text-neutral-50 font-bold text-shadow";
+  return "bg-red-700 text-neutral-50 font-bold text-shadow";
+};
 
 function getPositionBadge(positionID: number): JSX.Element {
   switch (positionID) {

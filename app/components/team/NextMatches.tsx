@@ -73,16 +73,16 @@ const NextMatches = ({ matches, selectedTeam }: Props) => {
   const currentWeek = getCurrentWeek(teamMatches);
 
   return (
-    <div className=" flex flex-col flex-auto md:flex-none ">
+    <div className=" flex flex-col  md:flex-none min-w-fit">
       <p className="text-center text-xs uppercase font-medium mb-2">
         Próximos partidos
       </p>
-      <div className=" flex flex-row justify-between items-center md:gap-2">
+      <div className=" flex flex-row justify-end items-center md:gap-4 gap-3">
         {/* Display matches for the selected week */}
         {teamMatches
           .filter(
             (match) =>
-              match.week >= currentWeek && match.week <= currentWeek + 4
+              match.week >= currentWeek && match.week <= currentWeek + 3
           )
           .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
           .map((match) => (
@@ -116,7 +116,7 @@ const NextMatches = ({ matches, selectedTeam }: Props) => {
                     day: "numeric",
                   })}
                 </p>
-                <div className="opacity-80">
+                <div className="">
                   {match.localTeamID !== selectedTeam ? (
                     <FlightIcon className="rotate-45" />
                   ) : (

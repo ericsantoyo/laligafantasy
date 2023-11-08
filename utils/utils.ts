@@ -36,7 +36,7 @@ export function slugByName({ name }) {
   return slug;
 }
 
-export const getColor = (points) => {
+export const getColor = (points: number) => {
   if (points >= 10) return "bg-green-600 text-neutral-50 font-bold text-shadow";
   if (points >= 5) return "bg-green-500 text-neutral-50 font-bold text-shadow";
   if (points >= 2) return "bg-orange-500 text-neutral-50 font-bold text-shadow";
