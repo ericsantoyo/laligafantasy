@@ -1,42 +1,28 @@
 import {
+  getAllPlayers,
+  getAllMatches,
   getAllStats,
-  getAllTeams,
-  getPaginatedPlayers,
+  getTeamByTeamID,
+  getPlayersByTeamID,
+  getAllTeams
 } from "@/database/client";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Calendar from "../components/news/Calendar";
 
-import SearchFilters from "@/app/components/stats/SearchFilters"
-import { slugById } from "@/utils/utils";
+import { Match } from "@/types";
 
 
-type Props = {};
+
+export default async function News() {
+
+  const { allMatches: matchesData } = await getAllMatches();
+  const { allTeams: teams } = await getAllTeams();
 
 
-//To format the value
-const formatter = new Intl.NumberFormat("en-GB", {});
-
-//To get the teamSlugs by teamID
-
-
-NewsPage.defaultProps = {
-  searchParams: {
-    page: "1",
-    limit: "12",
-    search: "",
-    team: "",
-  },
-};
-
-export default async function NewsPage({searchParams,}: {searchParams: { [key: string]: string | string[] | undefined };}) {
-  
- 
 
   return (
-    <div className="flex flex-col justify-center px-4 w-full">
-    
-
+    <div className=" flex flex-col gap-3">
+      {/* <pre className="text-center">{JSON.stringify(teams, null, 2)}</pre> */}
+      <Calendar matches = {matchesData} allTeams= {teams}/>
     </div>
   );
 }

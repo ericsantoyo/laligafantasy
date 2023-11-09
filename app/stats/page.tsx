@@ -7,8 +7,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-import SearchFilters from "@/app/components/stats/SearchFilters"
-import { formatter, getWeeksTotalPointsFromStats, lastChangeStyle, slugById } from "@/utils/utils";
+import SearchFilters from "@/app/components/stats/SearchFilters";
+import {
+  formatter,
+  getWeeksTotalPointsFromStats,
+  lastChangeStyle,
+  slugById,
+  getPositionBadge,
+} from "@/utils/utils";
 
 export const revalidate = 0;
 
@@ -22,56 +28,6 @@ const getColor = (points: number) => {
   return "bg-red-700 text-neutral-50 font-bold text-shadow";
 };
 
-function getPositionBadge(positionID: number): JSX.Element {
-  switch (positionID) {
-    case 1:
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="shadow-sm shadow-neutral-400 dark:shadow-neutral-800 w-9 text-center text-[12px] leading-5 font-semibold rounded bg-gradient-to-r from-[#d85912] to-[#ff7e00] dark:bg-orange-600 text-gray-50">
-            POR
-          </div>
-        </div>
-      );
-    case 2:
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="shadow-sm shadow-neutral-400 dark:shadow-neutral-800 w-9 text-center text-[12px] leading-5 font-semibold rounded bg-gradient-to-r from-[#8023a7] to-[#ce32dc] dark:bg-purple-600 text-gray-50">
-            DEF
-          </div>
-        </div>
-      );
-    case 3:
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="shadow-sm shadow-neutral-400 dark:shadow-neutral-800 w-9 text-center text-[12px] leading-5 font-semibold rounded bg-gradient-to-tr from-[#0094ff] to-[#4bafe3] dark:bg-blue-600 text-gray-50">
-            CEN
-          </div>
-        </div>
-      );
-    case 4:
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="shadow-sm shadow-neutral-400 border-gray-600 dark:shadow-neutral-800 w-9 text-center text-[12px] leading-5 font-semibold rounded bg-gradient-to-tr from-[#ee9015] to-[#f3c832] dark:bg-red-600 text-gray-50">
-            DEL
-          </div>
-        </div>
-      );
-    case 5:
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="shadow-sm shadow-neutral-400 dark:shadow-neutral-800 w-9 text-center text-[12px] leading-5 font-semibold rounded bg-gradient-to-br from-[#02da67] to-[#449fcf] dark:bg-green-600 text-gray-50">
-            ENT
-          </div>
-        </div>
-      );
-    default:
-      return <div className=""></div>; // Default case
-  }
-}
-
-
-
-
 StatsPage.defaultProps = {
   searchParams: {
     page: "1",
@@ -81,11 +37,19 @@ StatsPage.defaultProps = {
   },
 };
 
-export default async function StatsPage({searchParams,}: {searchParams: { [key: string]: string | string[] | undefined };}) {
-  const page = typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
-  const limit = typeof searchParams.limit === "string" ? Number(searchParams.limit) : 12;
-  const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
-  const team = typeof searchParams.team === "string"
+export default async function StatsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const page =
+    typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
+  const limit =
+    typeof searchParams.limit === "string" ? Number(searchParams.limit) : 12;
+  const search =
+    typeof searchParams.search === "string" ? searchParams.search : undefined;
+  const team =
+    typeof searchParams.team === "string"
       ? Number(searchParams.team)
       : undefined;
   const { paginatedPlayers: fetchedPlayers } = await getPaginatedPlayers({
@@ -96,7 +60,6 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
   });
   const { allStats: fetchedStats } = await getAllStats();
 
-  
   const { allTeams: fetchedTeams } = await getAllTeams();
 
   function formatPlayersWithStats(players, stats) {
@@ -113,10 +76,6 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
   }
 
   const playersWithStats = formatPlayersWithStats(fetchedPlayers, fetchedStats);
-
-
-
- 
 
   return (
     <div className="flex flex-col justify-center px-4 w-full">
@@ -169,8 +128,12 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
 
             {/* PLAYER BOTTOM ROW DATA */}
             <div className="flex gap-2 justify-between items-center">
-              <div className="">
-                {getPositionBadge(player.playerData.positionID)}
+              <div
+                className={
+                  getPositionBadge(player.playerData.positionID).className
+                }
+              >
+                {getPositionBadge(player.playerData.positionID).abbreviation}
               </div>
 
               <Link
@@ -188,10 +151,10 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
                 </div>
               </Link>
               <div className="flex flex-row justify-between items-center gap-1">
-              {getWeeksTotalPointsFromStats(
-                player.playerData.playerID,
-                playersWithStats,
-                6
+                {getWeeksTotalPointsFromStats(
+                  player.playerData.playerID,
+                  playersWithStats,
+                  6
                 ).map((point) => (
                   <div
                     className="flex flex-col justify-center items-center "
@@ -242,39 +205,39 @@ export default async function StatsPage({searchParams,}: {searchParams: { [key: 
         {/* Previous Page Button */}
 
         <div className="flex flex-start gap-4">
-        <Link
-          href={
-            `/stats?page=${page > 1 ? page - 1 : 1}` +
-            (team && team !== "-1" ? `&team=${team}` : "")
-          }
-          className={`${page ? "" : ""}`}
-        >
-          <Button
-            variant="stardard"
-            size="default"
-            className={` transition-all w-24 uppercase`}
+          <Link
+            href={
+              `/stats?page=${page > 1 ? page - 1 : 1}` +
+              (team && team !== "-1" ? `&team=${team}` : "")
+            }
+            className={`${page ? "" : ""}`}
           >
-            Previous
-          </Button>
-        </Link>
+            <Button
+              variant="stardard"
+              size="default"
+              className={` transition-all w-24 uppercase`}
+            >
+              Previous
+            </Button>
+          </Link>
 
-        {/* Next Page Button */}
-        <Link
-          href={
-            `/stats?page=${
-              playersWithStats.length === limit ? page + 1 : page
-            }` + (team && team !== "-1" ? `&team=${team}` : "")
-          }
-          className={`${page ? "" : ""}`}
-        >
-          <Button
-            variant="stardard"
-            size="default"
-            className={` transition-all w-24 uppercase `}
+          {/* Next Page Button */}
+          <Link
+            href={
+              `/stats?page=${
+                playersWithStats.length === limit ? page + 1 : page
+              }` + (team && team !== "-1" ? `&team=${team}` : "")
+            }
+            className={`${page ? "" : ""}`}
           >
-            Next
-          </Button>
-        </Link>
+            <Button
+              variant="stardard"
+              size="default"
+              className={` transition-all w-24 uppercase `}
+            >
+              Next
+            </Button>
+          </Link>
         </div>
         <div className="flex flex-end w-14"></div>
       </div>

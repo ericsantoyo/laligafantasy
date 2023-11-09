@@ -15,6 +15,15 @@
       dark:text-neutral-100  */
       transition-all ;
   }
+
+  .portero {
+    @apply 
+      bg-[#fff] 
+      dark:bg-[#121212]
+      text-neutral-800 
+      dark:text-[#fff] 
+      transition-all ;
+  }
 }
  
 @layer base {

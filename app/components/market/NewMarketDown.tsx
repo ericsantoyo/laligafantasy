@@ -104,17 +104,20 @@ const NewMarketDown = () => {
           playerData.playerData.marketValues[i - 1].marketValue;
 
         const valueChange = currentValue - previousValue;
+        const percentageChange =
+          ((currentValue - previousValue) / previousValue) * 100; // Calculate the percentage change
         const newValue = currentValue; // Calculate the new value
 
         playerValueChanges.push({
           date: currentDate,
           valueChange,
+          percentageChange,
           newValue, // Include the new value in the object
         });
       }
 
       // Reverse the array to display the most recent changes first
-      const last20ValueChanges = playerValueChanges.reverse().slice(0, 30); // Slice to include only the last 20 entries
+      const last20ValueChanges = playerValueChanges.reverse().slice(0, 30); // Slice to include only the last 30 entries
 
       return last20ValueChanges;
     }
@@ -288,7 +291,7 @@ const NewMarketDown = () => {
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-            <Card className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md ">
+              <Card className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md ">
               <Card className="p-4 flex flex-row justify-between items-center rounded-md ">
                 <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
@@ -317,8 +320,10 @@ const NewMarketDown = () => {
                     </div>
                     <div className="flex flex-row items-center gap-x-1">
                       {getWeeksTotalPointsFromStats(
-                        selectedPlayer.playerData.playerID
-                      , rowData, 6).map((point) => (
+                        selectedPlayer.playerData.playerID,
+                        rowData,
+                        6
+                      ).map((point) => (
                         <div
                           className="flex flex-col justify-center items-center "
                           key={point.week}
@@ -370,11 +375,22 @@ const NewMarketDown = () => {
                 <Table className="m-auto w-auto mt-4">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="h-2 font-extrabold text-left w-[100px] text-xs">
+                      <TableHead className="h-2 font-extrabold text-left w-[70px] text-xs">
                         Fecha
                       </TableHead>
                       <TableHead className="h-2 font-extrabold text-center text-xs">
                         $ Cambio
+                      </TableHead>
+                      <TableHead className="h-2 flex flex-row justify-end   font-extrabold text-center text-xs">
+                        <ChevronsDown
+                          size={14}
+                          className=" text-red-500 dark:text-red-400 "
+                        />
+                        %
+                        <ChevronsUp
+                          size={14}
+                          className="text-green-600 dark:text-green-400 mr-2"
+                        />
                       </TableHead>
                       <TableHead className="h-2 font-extrabold text-right text-xs">
                         $ Actual
@@ -386,44 +402,58 @@ const NewMarketDown = () => {
                       selectedPlayer.playerData.playerID
                     ).map((change, index) => (
                       <TableRow key={index}>
-                        <TableCell className="text-left py-[4px]  text-xs">
+                        <TableCell className="text-left py-1 text-xs tabular-nums tracking-tight">
                           {formatDate(change.date)}
                         </TableCell>
-                        <TableCell
-                          className={`py-[4px] flex flex-row justify-end items-center text-xs`}
-                        >
-                          <div
-                            className={`flex justify-center items-center h-full font-bold
-          ${
-            change.valueChange < 0
-              ? "text-red-500 dark:text-red-400 h-full"
-              : "text-green-600 dark:text-green-400 h-full"
-          }`}
-                          >
-                            {formatMoney(change.valueChange)}
-                          </div>
-                          <div
-                            className={`flex justify-center items-center h-full ml-2
-          ${
-            change.valueChange < 0
-              ? "text-red-500 dark:text-red-400 "
-              : "text-green-600 dark:text-green-400"
-          }`}
-                          >
-                            {change.valueChange < 0 ? (
-                              <ChevronsDown size={14} />
-                            ) : (
-                              <ChevronsUp size={14} />
-                            )}
+                        <TableCell className="py-1 text-xs">
+                          <div className="flex  flex-row items-center justify-end">
+                            <div
+                              className={`font-bold tabular-nums tracking-tight 
+                                          ${
+                                            change.valueChange < 0
+                                              ? "text-red-500 dark:text-red-400"
+                                              : "text-green-600 dark:text-green-400"
+                                          }`}
+                            >
+                              {formatMoney(change.valueChange)}
+                            </div>
+                            {/* <div
+                                                          className={`ml-2
+                                          ${
+                                            change.valueChange < 0
+                                              ? "text-red-500 dark:text-red-400"
+                                              : "text-green-600 dark:text-green-400"
+                                          }`}
+                            >
+                              {change.valueChange < 0 ? (
+                                <ChevronsDown size={14} />
+                              ) : (
+                                <ChevronsUp size={14} />
+                              )}
+                            </div> */}
                           </div>
                         </TableCell>
-                        <TableCell className="py-[4px] text-right text-xs">
+                        <TableCell className="py-1  ">
+                          <div
+                            className={`text-[11px] mr-2 font-semibold ml-2 tabular-nums tracking-tight text-right ${
+                              change.percentageChange < 0
+                                ? "text-red-500 dark:text-red-400"
+                                : "text-green-600 dark:text-green-400"
+                            }`}
+                          >
+                            {change.percentageChange !== undefined
+                              ? `${change.percentageChange.toFixed(2)}%`
+                              : ""}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tight	">
                           {formatMoney(change.newValue)}
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+
                 <CardFooter className="pt-4 pb-0 text-xs  font-extralight">
                   Cambios de Valor (Ultimos 30 Dias)
                 </CardFooter>

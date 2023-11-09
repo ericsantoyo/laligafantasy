@@ -88,7 +88,7 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
                   className="w-10 h-10 md:w-12 md:h-12"
                 />
                 <div className="flex flex-col flex-1 ml-2">
-                  <p className="w-18 md:w-24">
+                  <p className="font-semibold w-18 md:w-24">
                     {/* {player.nickname.length > 13
                       ? `${player.nickname.split(" ")[0].charAt(0)}. ${
                           player.nickname.split(" ")[1]
@@ -145,21 +145,18 @@ const TeamRoster: React.FC<TeamRosterProps> = ({
                   6
                 ).map((point) => (
                   <div
-                    className="flex flex-col justify-center items-center "
+                    className="flex flex-col justify-between items-center h-full"
                     key={point.week}
                   >
                     <div
-                      className={`text-center border-[0.5px] md:w-5 md:h-5 w-[18px] h-[18px] border-neutral-700   rounded-sm  flex justify-center items-center ${getColor(
+                      className={`flex justify-center items-center text-center border-[0.5px] md:w-5 md:h-5 w-[18px] h-[18px] border-neutral-700   rounded-sm   ${getColor(
                         point.points
-                      )}`}
-                    >
-                      <p
-                        className={`text-[11px] md:text-xs items-center align-middle`}
-                      >
+                      )}`}>
+                      <p className={`text-[11px] md:text-xs  `} >
                         {point.points}
                       </p>
                     </div>
-                    <div className="text-center text-[10px]">J{point.week}</div>
+                    <div className=" text-center text-[10px] md:text-[11px] leading-none pt-1">J{point.week}</div>
                   </div>
                 ))}
               </div>

@@ -34,17 +34,13 @@ export type Team = {
 
 export type Match = {
   matchID: number;
-  homeTeamID: number;
-  awayTeamID: number;
-  homeTeamName: string;
-  awayTeamName: string;
-  homeTeamScore: number;
-  awayTeamScore: number;
-  date: string;
-  status: string;
-  round: number;
-  homeTeamImage: string;
-  awayTeamImage: string;
+  matchDate: string;
+  week: number;
+  localScore: number;
+  visitorScore: number;
+  localTeamID: number;
+  visitorTeamID: number;
+  matchState: string;
 };
 
 export type PlayerStats = {
