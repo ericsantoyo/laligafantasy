@@ -141,8 +141,10 @@ const NewMarketDown = () => {
     {
       field: "playerData.lastMarketChange",
       headerName: "Subida",
-      minWidth: 70,
+      minWidth: 90,
       sort: "asc",
+      headerClass: "ag-center-header",
+    
       cellRenderer: tableSubidasBajadas,
     },
     {
@@ -155,7 +157,7 @@ const NewMarketDown = () => {
       field: "playerData.marketValue",
       headerName: "$ Actual",
       minWidth: 80,
-      headerClass: "flex justify-center items-center",
+      headerClass: "ag-center-header",
       cellRenderer: tableValues,
     },
     {
@@ -170,13 +172,9 @@ const NewMarketDown = () => {
       headerName: "Pos",
       minWidth: 65,
       cellRenderer: tablePositions,
+      headerClass: "ag-center-header",
     },
-    // {
-    //   field: "teamName",
-    //   headerName: "",
-    //   minWidth: 1,
-    //   maxWidth: 1,
-    // },
+
   ]);
 
   const defaultColDef = {
@@ -229,44 +227,7 @@ const NewMarketDown = () => {
     gridApi.setQuickFilter(e.target.value);
   };
 
-  // function getWeeksTotalPointsFromStats(playerId) {
-  //   const selectedPlayerData = rowData.find(
-  //     (player) => player.playerData.playerID === playerId
-  //   );
-  //   const player = selectedPlayerData.playerData;
-  //   const stats = selectedPlayerData.stats;
-  //   const maxWeeks = 6; // Maximum number of weeks to display
-  //   // console.log(stats);
-  //   let points = [];
 
-  //   // Create a map to store points by week
-  //   const pointsByWeek = new Map();
-
-  //   // Calculate points for each week from the player's stats
-  //   for (const stat of stats) {
-  //     const week = stat.week;
-  //     const totalPoints = stat.totalPoints;
-
-  //     // Update the points for the corresponding week
-  //     pointsByWeek.set(week, totalPoints);
-  //   }
-
-  //   // Determine the maximum week
-  //   let maxWeek = Math.max(...stats.map((stat) => stat.week));
-  //   // console.log(maxWeek);
-  //   // Get the last 5 weeks (or fewer if less than 5 weeks of data)
-  //   for (let i = maxWeek; i > maxWeek - maxWeeks && i >= 1; i--) {
-  //     points.push({
-  //       week: i,
-  //       points: pointsByWeek.get(i) || 0, // Use 0 if there are no stats for the week
-  //     });
-  //   }
-
-  //   // Sort points by week in ascending order
-  //   points.sort((a, b) => a.week - b.week);
-  //   // console.log(points);
-  //   return points;
-  // }
 
   return (
     <>
@@ -446,7 +407,7 @@ const NewMarketDown = () => {
                               : ""}
                           </div>
                         </TableCell>
-                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tight	">
+                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tighter	">
                           {formatMoney(change.newValue)}
                         </TableCell>
                       </TableRow>

@@ -106,3 +106,13 @@
   --ag-borders: none;
   border-radius: 5px
 }
+
+ /* .ag-header-cell-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ } */
+
+ .ag-center-header .ag-header-cell-label {
+  justify-content: center;
+}

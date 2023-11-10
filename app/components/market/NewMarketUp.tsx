@@ -142,8 +142,10 @@ const NewMarketUp = () => {
     {
       field: "playerData.lastMarketChange",
       headerName: "Subida",
-      minWidth: 70,
+      minWidth: 90,
       sort: "desc",
+      headerClass: "ag-center-header",
+    
       cellRenderer: tableSubidasBajadas,
     },
     {
@@ -156,7 +158,7 @@ const NewMarketUp = () => {
       field: "playerData.marketValue",
       headerName: "$ Actual",
       minWidth: 80,
-      headerClass: "flex justify-center items-center",
+      headerClass: "ag-center-header",
       cellRenderer: tableValues,
     },
     {
@@ -171,13 +173,9 @@ const NewMarketUp = () => {
       headerName: "Pos",
       minWidth: 65,
       cellRenderer: tablePositions,
+      headerClass: "ag-center-header",
     },
-    // {
-    //   field: "teamName",
-    //   headerName: "",
-    //   minWidth: 1,
-    //   maxWidth: 1,
-    // },
+
   ]);
 
   const defaultColDef = {
@@ -408,7 +406,7 @@ const NewMarketUp = () => {
                               : ""}
                           </div>
                         </TableCell>
-                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tight	">
+                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tighter	">
                           {formatMoney(change.newValue)}
                         </TableCell>
                       </TableRow>

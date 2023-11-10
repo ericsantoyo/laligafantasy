@@ -15,7 +15,7 @@ export default (props) => {
       dark:text-green-400 
       text-md
       font-bold
-flex justify-center items-center h-full      "
+flex justify-end items-center h-full   tabular-nums  tracking-tighter md:tracking-normal	 "
       >
         {formatter.format(cellValue)}
       </div>
@@ -30,7 +30,7 @@ flex justify-center items-center h-full      "
       dark:text-red-300 
       text-md
       font-bold
-flex justify-center items-center h-full      "
+flex justify-end items-center h-full   tabular-nums tracking-tighter	md:tracking-normal  "
       >
         {formatter.format(cellValue)}
       </div>
