@@ -151,13 +151,13 @@ const NewMarketUp = () => {
     {
       field: "playerData.teamName",
       headerName: "",
-      minWidth: 50,
+      minWidth: 40,
       cellRenderer: tableClubLogos,
     },
     {
       field: "playerData.marketValue",
       headerName: "$ Actual",
-      minWidth: 80,
+      minWidth: 90,
       headerClass: "ag-center-header",
       cellRenderer: tableValues,
     },

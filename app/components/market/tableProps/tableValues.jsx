@@ -9,7 +9,7 @@ export default (props) => {
 
   if (props.value > 1) {
     return (
-      <div className="flex justify-center md:justify-end items-center h-full mr-3 sm:mr-0 tabular-nums tracking-tight md:tracking-normal">
+      <div className="flex flex-row justify-end h-full tabular-nums tracking-tight md:tracking-normal">
         {formatter.format(cellValue)}
       </div>
     );
@@ -17,7 +17,7 @@ export default (props) => {
 
   if (props.value < 1) {
     return (
-      <div className="flex justify-center md:justify-end items-center h-full tabular-nums tracking-tight md:tracking-normal	">
+      <div className="flex justify-end items-center md:justify-end h-full tabular-nums tracking-tight md:tracking-normal	">
         {formatter.format(cellValue)}
       </div>
     );

@@ -9,6 +9,9 @@ import TeamLayout from "@/app/components/team/TeamRoster";
 
 import TeamInfoCard from "@/app/components/team/TeamInfoCard";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export const revalidate = 0;
 
 export default async function Team({ params }: { params: { teamID: number } }) {
   const { data: teamData } = await getTeamByTeamID(params.teamID);
@@ -46,9 +49,23 @@ export default async function Team({ params }: { params: { teamID: number } }) {
   const sortedPlayers = getSortedPlayersByPoints();
 
   return (
-    <div className=" flex flex-col gap-3">
+    <div className=" flex flex-col gap-3 w-full">
       <TeamInfoCard teamInfo={team} playerInfo={players} />
-      <TeamLayout teamPlayers={sortedPlayers} playerStats={playersWithStats} />
+      <Tabs defaultValue="alineacion" className="w-full">
+        <TabsList>
+          <TabsTrigger value="alineacion">Alineacion</TabsTrigger>
+          <TabsTrigger value="plantilla">Plantilla</TabsTrigger>
+        </TabsList>
+        <TabsContent value="alineacion">
+          Make changes to your account here.
+        </TabsContent>
+        <TabsContent value="plantilla">
+          <TeamLayout
+            teamPlayers={sortedPlayers}
+            playerStats={playersWithStats}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

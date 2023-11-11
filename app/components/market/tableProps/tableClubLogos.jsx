@@ -7,7 +7,7 @@ export default (props) => {
   const teamSlug = slugByName({ name: cellValue });
 
   return (
-    <div className="flex justify-center items-center h-full">
+    <div className="flex justify-center items-center h-full ">
       <Image
         className="h-5 w-auto "
         src={`/teamLogos/${teamSlug}.png`}
