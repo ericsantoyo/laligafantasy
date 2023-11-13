@@ -1,3 +1,5 @@
+import { getMatchesByTeamID } from "@/database/client";
+
 export const teams = [
   { name: "Deportivo Alavés", slug: "d-alaves", id: 21 },
   { name: "UD Almería", slug: "ud-almeria", id: 1 },
@@ -185,4 +187,44 @@ export function getPositionBadge(positionID: number): PositionBadge {
         className: "", // Default case
       };
   }
+}
+
+
+export async function getTeamLogo(teamID) {
+  const slug = slugById(teamID);
+  return `/teamLogos/${slug}.png`;
+}
+
+export async function getWeeksTotalPointsFromStatsWithTeamLogo(playerId, rowData, maxWeeks, teamMatches) {
+  const selectedPlayerData = rowData.find(
+    (player) => player.playerData.playerID === playerId
+  );
+  const player = selectedPlayerData.playerData;
+  const stats = selectedPlayerData.stats;
+
+  let points = [];
+
+  // Calculate points for each week from the player's stats
+  const pointsByWeek = new Map();
+  for (const stat of stats) {
+    const week = stat.week;
+    const totalPoints = stat.totalPoints;
+    pointsByWeek.set(week, totalPoints);
+  }
+
+  let maxWeek = Math.max(...stats.map((stat) => stat.week));
+
+  // Get the last N weeks (or fewer if less than N weeks of data)
+  for (let i = maxWeek; i > maxWeek - maxWeeks && i >= 1; i--) {
+    const teamLogoURL = await getTeamLogo(player.teamID);
+    points.push({
+      week: i,
+      points: pointsByWeek.get(i) || 0,
+      teamLogoURL: teamLogoURL || null,
+    });
+  }
+
+  points.sort((a, b) => a.week - b.week);
+
+  return points;
 }

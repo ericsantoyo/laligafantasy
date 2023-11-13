@@ -259,8 +259,8 @@ const NewMarketDown = () => {
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-            <Card className=" w-[350px] h-[660px] p-4 transition-all absolute outline-none rounded-md flex flex-col justify-between ">
-              <Card className="p-4 flex flex-row justify-between items-center rounded-md ">
+             <Card className=" w-[330px] h-[610px] p-4 transition-all absolute outline-none rounded-md flex flex-col justify-between ">
+              <Card className="py-2 px-4 flex flex-row justify-between items-center rounded-md ">
                 <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
                     <div className="flex flex-row justify-center items-center gap-x-2">
@@ -349,8 +349,8 @@ const NewMarketDown = () => {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="table">
-                  <Card className="h-[416px] pt-0 flex flex-col justify-between items-center rounded-md border-none shadow-none">
-                    <Table className="m-auto w-auto mt-4">
+                  <Card className="h-[360px] pt-0 flex flex-col justify-between items-center rounded-md border-none shadow-none">
+                    <Table className="m-auto w-auto mt-1">
                       <TableHeader>
                         <TableRow>
                           <TableHead className="h-2 font-extrabold text-left w-[70px] text-xs">
@@ -359,16 +359,16 @@ const NewMarketDown = () => {
                           <TableHead className="h-2 font-extrabold text-center text-xs">
                             $ Cambio
                           </TableHead>
-                          <TableHead className="h-2 flex flex-row justify-end   font-extrabold text-center text-xs">
-                            <ChevronsDown
+                          <TableHead className="h-2 flex flex-row justify-center   font-extrabold text-center text-xs">
+                            {/* <ChevronsDown
                               size={14}
                               className=" text-red-500 dark:text-red-400 "
-                            />
+                            /> */}
                             %
-                            <ChevronsUp
+                            {/* <ChevronsUp
                               size={14}
                               className="text-green-600 dark:text-green-400 mr-2"
-                            />
+                            /> */}
                           </TableHead>
                           <TableHead className="h-2 font-extrabold text-right text-xs">
                             $ Actual
@@ -432,7 +432,7 @@ const NewMarketDown = () => {
                       </TableBody>
                     </Table>
 
-                    <CardFooter className="pt-4 pb-0 text-xs  font-extralight">
+                    <CardFooter className="pt-2 pb-0 text-xs  font-extralight">
                       Cambios de Valor (Ultimos 30 Dias)
                     </CardFooter>
                   </Card>{" "}
