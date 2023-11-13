@@ -10,16 +10,18 @@ import tableSubidasBajadas from "@/app/components/market/tableProps/tableSubidas
 import tablePlayerNames from "@/app/components/market/tableProps/tablePlayerNames";
 import tablePlayerImg from "@/app/components/market/tableProps/tablePlayerImg";
 import { getAllPlayers, getAllStats } from "@/database/client";
-import { getColor, formatDate, formatMoney, getWeeksTotalPointsFromStats } from "@/utils/utils";
+import {
+  getColor,
+  formatDate,
+  formatMoney,
+  getWeeksTotalPointsFromStats,
+} from "@/utils/utils";
 // import { useTheme } from "next-themes";
 import Image from "next/image";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import useSWR from "swr";
 
 import {
   Table,
@@ -37,16 +39,17 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { slugById } from "@/utils/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import useSWR from "swr";
 import { Card, CardFooter } from "@/components/ui/card";
-
-
+import ValueChart from "../player/ValueChart";
 
 const NewMarketDown = () => {
   const [rowData, setRowData] = useState();
   // const { theme } = useTheme();
-
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
+  const [gridClassName, setGridClassName] = useState("");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -56,8 +59,6 @@ const NewMarketDown = () => {
   //     theme === "light" ? "ag-theme-balham" : "ag-theme-balham-dark"
   //   );
   // }, [theme]);
-
-  //changeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
   function formatPlayersWithStats(players, stats) {
     const formattedPlayers = [];
@@ -77,6 +78,7 @@ const NewMarketDown = () => {
     async () => {
       const { allPlayers: players } = await getAllPlayers();
       const { allStats: stats } = await getAllStats();
+
       return formatPlayersWithStats(players, stats);
     }
   );
@@ -144,7 +146,7 @@ const NewMarketDown = () => {
       minWidth: 90,
       sort: "asc",
       headerClass: "ag-center-header",
-    
+
       cellRenderer: tableSubidasBajadas,
     },
     {
@@ -174,7 +176,6 @@ const NewMarketDown = () => {
       cellRenderer: tablePositions,
       headerClass: "ag-center-header",
     },
-
   ]);
 
   const defaultColDef = {
@@ -219,15 +220,21 @@ const NewMarketDown = () => {
     gridRef.current.api.sizeColumnsToFit();
   }, []);
 
-  function onGridReady(params) {
+  function onGridReady(params: any) {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
   }
-  const onFilterTextChange = (e) => {
-    gridApi.setQuickFilter(e.target.value);
+  const onFilterTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (gridApi) {
+      gridApi.setQuickFilter(e.target.value);
+    }
   };
-
-
+  const marketValueDates = selectedPlayer?.playerData?.marketValues?.map(
+    (entry: any) => new Date(entry.date)
+  );
+  const marketValueList = selectedPlayer?.playerData?.marketValues.map(
+    (entry) => entry.marketValue
+  );
 
   return (
     <>
@@ -252,7 +259,7 @@ const NewMarketDown = () => {
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-              <Card className=" max-w-[400px] min-w-[350px] p-4 transition-all absolute outline-none rounded-md ">
+            <Card className=" w-[350px] h-[660px] p-4 transition-all absolute outline-none rounded-md flex flex-col justify-between ">
               <Card className="p-4 flex flex-row justify-between items-center rounded-md ">
                 <div className="flex flex-col justify-center items-start gap-2">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
@@ -332,53 +339,63 @@ const NewMarketDown = () => {
                   />
                 </div>
               </Card>
-              <Card className="h-[416px] pt-2 flex flex-col justify-between items-center rounded-md border-none shadow-none">
-                <Table className="m-auto w-auto mt-4">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="h-2 font-extrabold text-left w-[70px] text-xs">
-                        Fecha
-                      </TableHead>
-                      <TableHead className="h-2 font-extrabold text-center text-xs">
-                        $ Cambio
-                      </TableHead>
-                      <TableHead className="h-2 flex flex-row justify-end   font-extrabold text-center text-xs">
-                        <ChevronsDown
-                          size={14}
-                          className=" text-red-500 dark:text-red-400 "
-                        />
-                        %
-                        <ChevronsUp
-                          size={14}
-                          className="text-green-600 dark:text-green-400 mr-2"
-                        />
-                      </TableHead>
-                      <TableHead className="h-2 font-extrabold text-right text-xs">
-                        $ Actual
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {prepareValueChangesData(
-                      selectedPlayer.playerData.playerID
-                    ).map((change, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-left py-1 text-xs tabular-nums tracking-tight">
-                          {formatDate(change.date)}
-                        </TableCell>
-                        <TableCell className="py-1 text-xs">
-                          <div className="flex  flex-row items-center justify-end">
-                            <div
-                              className={`font-bold tabular-nums tracking-tight 
+              <Tabs defaultValue="table" className="grow w-full mx-auto">
+                <TabsList className="flex flex-row justify-center items-center mt-2">
+                  <TabsTrigger className="w-full" value="table">
+                    Tabla
+                  </TabsTrigger>
+                  <TabsTrigger className="w-full" value="graph">
+                    Grafica
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="table">
+                  <Card className="h-[416px] pt-0 flex flex-col justify-between items-center rounded-md border-none shadow-none">
+                    <Table className="m-auto w-auto mt-4">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="h-2 font-extrabold text-left w-[70px] text-xs">
+                            Fecha
+                          </TableHead>
+                          <TableHead className="h-2 font-extrabold text-center text-xs">
+                            $ Cambio
+                          </TableHead>
+                          <TableHead className="h-2 flex flex-row justify-end   font-extrabold text-center text-xs">
+                            <ChevronsDown
+                              size={14}
+                              className=" text-red-500 dark:text-red-400 "
+                            />
+                            %
+                            <ChevronsUp
+                              size={14}
+                              className="text-green-600 dark:text-green-400 mr-2"
+                            />
+                          </TableHead>
+                          <TableHead className="h-2 font-extrabold text-right text-xs">
+                            $ Actual
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {prepareValueChangesData(
+                          selectedPlayer.playerData.playerID
+                        ).map((change, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="text-left py-1 text-xs tabular-nums tracking-tight">
+                              {formatDate(change.date)}
+                            </TableCell>
+                            <TableCell className="py-1 text-xs">
+                              <div className="flex  flex-row items-center justify-end">
+                                <div
+                                  className={`font-bold tabular-nums tracking-tight 
                                           ${
                                             change.valueChange < 0
                                               ? "text-red-500 dark:text-red-400"
                                               : "text-green-600 dark:text-green-400"
                                           }`}
-                            >
-                              {formatMoney(change.valueChange)}
-                            </div>
-                            {/* <div
+                                >
+                                  {formatMoney(change.valueChange)}
+                                </div>
+                                {/* <div
                                                           className={`ml-2
                                           ${
                                             change.valueChange < 0
@@ -392,42 +409,107 @@ const NewMarketDown = () => {
                                 <ChevronsUp size={14} />
                               )}
                             </div> */}
-                          </div>
-                        </TableCell>
-                        <TableCell className="py-1  ">
-                          <div
-                            className={`text-[11px] mr-2 font-semibold ml-2 tabular-nums tracking-tight text-right ${
-                              change.percentageChange < 0
-                                ? "text-red-500 dark:text-red-400"
-                                : "text-green-600 dark:text-green-400"
-                            }`}
-                          >
-                            {change.percentageChange !== undefined
-                              ? `${change.percentageChange.toFixed(2)}%`
-                              : ""}
-                          </div>
-                        </TableCell>
-                        <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tighter	">
-                          {formatMoney(change.newValue)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-1  ">
+                              <div
+                                className={`text-[11px] mr-2 font-semibold ml-2 tabular-nums tracking-tight text-right ${
+                                  change.percentageChange < 0
+                                    ? "text-red-500 dark:text-red-400"
+                                    : "text-green-600 dark:text-green-400"
+                                }`}
+                              >
+                                {change.percentageChange !== undefined
+                                  ? `${change.percentageChange.toFixed(2)}%`
+                                  : ""}
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-1 text-right text-xs  tabular-nums tracking-tighter	">
+                              {formatMoney(change.newValue)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
 
-                <CardFooter className="pt-4 pb-0 text-xs  font-extralight">
-                  Cambios de Valor (Ultimos 30 Dias)
-                </CardFooter>
-              </Card>
+                    <CardFooter className="pt-4 pb-0 text-xs  font-extralight">
+                      Cambios de Valor (Ultimos 30 Dias)
+                    </CardFooter>
+                  </Card>{" "}
+                </TabsContent>
+                <TabsContent value="graph" className="h-fit ">
+                  <Card className="h-96 w-full pt-0 flex flex-col justify-start gap-4 items-center rounded-md border-none shadow-none">
+                    <ValueChart fetchedPlayer={selectedPlayer.playerData} />
+                    <div className="flex flex-col gap-4">
+                      <p className="text-center">
+                        <p className="text-center text-sm">Valor minimo:</p>
+                        <span className="font-bold">
+                          {Math.min(...marketValueList).toLocaleString(
+                            "es-ES",
+                            {
+                              style: "currency",
+                              currency: "EUR",
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }
+                          )}
+                        </span>{" "}
+                        <span className="text-xs text-gray-500 capitalize">
+                          (
+                          {new Date(
+                            marketValueDates[
+                              marketValueList.indexOf(
+                                Math.min(...marketValueList)
+                              )
+                            ]
+                          ).toLocaleDateString("es-EU", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          )
+                        </span>
+                      </p>
+
+                      <p className="text-center">
+                        <p className="text-center text-sm">Valor maximo:</p>
+                        <span className="font-bold ">
+                          {Math.max(...marketValueList).toLocaleString(
+                            "es-ES",
+                            {
+                              style: "currency",
+                              currency: "EUR",
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }
+                          )}
+                        </span>{" "}
+                        <span className="text-xs text-gray-500 capitalize">
+                          (
+                          {new Date(
+                            marketValueDates[
+                              marketValueList.indexOf(
+                                Math.max(...marketValueList)
+                              )
+                            ]
+                          ).toLocaleDateString("es-EU", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          )
+                        </span>
+                      </p>
+                    </div>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </Card>
           </Fade>
         </Modal>
       )}
-
       <Paper
         elevation={4}
         id="grid-wrapper"
-        // className="overflow-hidden "
+     
         className={
           "h-auto flex flex-col justify-start items-center transition-all"
         }
@@ -437,11 +519,11 @@ const NewMarketDown = () => {
           <span className="flex justify-center items-center md:text-lg font-semibold mr-2 w-full text-center">
             <ChevronsDown
               size={24}
-              className="mr-2 text-red-500 dark:text-red-400 "
+              className="text-red-500 dark:text-red-400 mr-2"
             />{" "}
             Ultimas Bajadas
           </span>
-          <div className="relative w-full">
+          <div className="relative w-full flex flex-row justify-center items-center">
             <Search className="absolute h-4 w-4 top-[10px] left-4 text-muted-foreground" />
             <Input
               type="search"
@@ -454,7 +536,7 @@ const NewMarketDown = () => {
             />
           </div>
         </Box>
-       
+
         <div id="myGrid" className={`ag-theme-balham w-full  transition-all`}>
           <AgGridReact
             rowData={rowData}

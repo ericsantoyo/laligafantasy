@@ -51,21 +51,23 @@ export default async function Team({ params }: { params: { teamID: number } }) {
   return (
     <div className=" flex flex-col gap-3 w-full">
       <TeamInfoCard teamInfo={team} playerInfo={players} />
-      <Tabs defaultValue="alineacion" className="w-full">
-        <TabsList>
-          <TabsTrigger value="alineacion">Alineacion</TabsTrigger>
-          <TabsTrigger value="plantilla">Plantilla</TabsTrigger>
-        </TabsList>
-        <TabsContent value="alineacion">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="plantilla">
-          <TeamLayout
-            teamPlayers={sortedPlayers}
-            playerStats={playersWithStats}
-          />
-        </TabsContent>
-      </Tabs>
+      <div className="flex">
+        <Tabs defaultValue="alineacion" className="w-full">
+          <TabsList>
+            <TabsTrigger value="alineacion">Alineacion</TabsTrigger>
+            <TabsTrigger value="plantilla">Plantilla</TabsTrigger>
+          </TabsList>
+          <TabsContent value="alineacion">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="plantilla">
+            <TeamLayout
+              teamPlayers={sortedPlayers}
+              playerStats={playersWithStats}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
