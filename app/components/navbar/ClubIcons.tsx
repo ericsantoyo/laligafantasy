@@ -42,24 +42,13 @@ const ClubIcons = (props: Props) => {
                       objectFit: "contain",
                       width: "auto",
                       
+                      
                     }}
-                    className="h-12 p-[6px]"
+                    className="h-12  p-[6px]"
                     priority
                   />
 
-                  {/* <Image
-                    src={club.badgeColor}
-                    alt={club.shortName}
-                    width={48}
-                    height={48}
-                    style={{
-                      objectFit: "contain",
-                      width: "auto",
-                      height: "auto",
-                    }}
-                    className="h-12 p-[6px]"
-                    priority // Add this line
-                  /> */}
+                    
                 </div>
               </Link>
             </li>

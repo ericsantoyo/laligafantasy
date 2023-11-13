@@ -10,11 +10,15 @@ import TeamLayout from "@/app/components/team/TeamRoster";
 import TeamInfoCard from "@/app/components/team/TeamInfoCard";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { notFound } from "next/navigation";
 
 export const revalidate = 0;
 
 export default async function Team({ params }: { params: { teamID: number } }) {
   const { data: teamData } = await getTeamByTeamID(params.teamID);
+  if (!teamData) {
+    return notFound();
+  }
   const team = teamData[0];
   const { data: playersData } = await getPlayersByTeamID(params.teamID);
   const players = playersData;

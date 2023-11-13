@@ -57,17 +57,16 @@ async function getAllTeams(): Promise<{ allTeams: Team[] }> {
   return { allTeams };
 }
 
-async function getPlayerById(
-  id: number
-): Promise<{ player: Player | null; stats: Stat[] }> {
-  let { data: playerData } = await supabase
+async function getPlayerById(playerID: number) {
+  // if (!playerID) return { data: null, error: "No playerID provided" };
+  const { data: playerData, error } = await supabase
     .from("players")
     .select("*")
-    .eq("playerID", id);
-  let { data: playerStat } = await supabase
+    .eq("playerID", playerID);
+  const { data: playerStat } = await supabase
     .from("stats")
     .select("*")
-    .eq("playerID", id);
+    .eq("playerID", playerID);
 
   let player: Player | null = null;
   let stats: Stat[] = [];
@@ -83,6 +82,7 @@ async function getPlayerById(
   return {
     player,
     stats,
+    error,
   };
 }
 
@@ -127,12 +127,10 @@ async function getMatchesByTeamID(teamID: number) {
     .from("matches")
     .select("*")
     .or(`localTeamID.eq.${teamID}, visitorTeamID.eq.${teamID}`)
-    .order("matchDate", { ascending: true }); 
+    .order("matchDate", { ascending: true });
 
   return { data, error };
 }
-
-
 
 export {
   getAllPlayers,

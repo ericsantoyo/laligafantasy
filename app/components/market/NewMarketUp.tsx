@@ -441,7 +441,7 @@ const NewMarketUp = () => {
                   <Card className="h-96 w-full pt-0 flex flex-col justify-start gap-4 items-center rounded-md border-none shadow-none">
                     <ValueChart fetchedPlayer={selectedPlayer.playerData} />
                     <div className="flex flex-col gap-4">
-                      <p className="text-center">
+                      <div className="text-center">
                         <p className="text-center text-sm">Valor minimo:</p>
                         <span className="font-bold">
                           {Math.min(...marketValueList).toLocaleString(
@@ -468,9 +468,9 @@ const NewMarketUp = () => {
                           })}
                           )
                         </span>
-                      </p>
+                      </div>
 
-                      <p className="text-center">
+                      <div className="text-center">
                         <p className="text-center text-sm">Valor maximo:</p>
                         <span className="font-bold ">
                           {Math.max(...marketValueList).toLocaleString(
@@ -497,7 +497,7 @@ const NewMarketUp = () => {
                           })}
                           )
                         </span>
-                      </p>
+                      </div>
                     </div>
                   </Card>
                 </TabsContent>
@@ -529,7 +529,7 @@ const NewMarketUp = () => {
               type="search"
               onChange={onFilterTextChange}
               placeholder="Buscar..."
-              className="pl-10 outline-none
+              className="pl-10 outline-none text-md
               dark:bg-neutral-200 dark:placeholder-neutral-800 
               dark:text-neutral-800
         "

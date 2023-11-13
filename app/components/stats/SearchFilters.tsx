@@ -93,7 +93,7 @@ const SearchFilters = ({ search }: Props) => {
       >
         <Search className="absolute h-4 w-4 top-3 left-3 " />
         <Input
-          className="pl-9 outline-none"
+          className="pl-9 outline-none text-md"
           type="text"
           placeholder="Search..."
           value={playerName}
