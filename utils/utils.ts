@@ -1,4 +1,3 @@
-import { getMatchesByTeamID } from "@/database/client";
 
 export const teams = [
   { name: "Deportivo Alavés", slug: "d-alaves", id: 21 },

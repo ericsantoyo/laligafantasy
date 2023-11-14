@@ -24,8 +24,6 @@ async function getPaginatedPlayers({
   page: number;
   limit: number;
 }): Promise<{ paginatedPlayers: Player[]; totalCount: number }> {
-  //imitate delay
-
   let request = supabase.from("players").select("*");
 
   if (teamID !== undefined) {
@@ -33,7 +31,7 @@ async function getPaginatedPlayers({
   }
 
   if (playerName) {
-    request = request.ilike("nickname", `%${playerName}%`); // This filters the players by the name using ILIKE
+    request = request.ilike("nickname", `%${playerName}%`);
   }
 
   const { data: paginatedPlayers, count } = await request

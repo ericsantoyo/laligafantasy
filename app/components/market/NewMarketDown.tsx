@@ -9,7 +9,11 @@ import tableClubLogos from "@/app/components/market/tableProps/tableClubLogos";
 import tableSubidasBajadas from "@/app/components/market/tableProps/tableSubidasBajadas";
 import tablePlayerNames from "@/app/components/market/tableProps/tablePlayerNames";
 import tablePlayerImg from "@/app/components/market/tableProps/tablePlayerImg";
-import { getAllPlayers, getAllStats } from "@/database/client";
+import {
+  getAllPlayers,
+  getAllStats,
+  getMatchesByTeamID,
+} from "@/database/client";
 import {
   getColor,
   formatDate,
@@ -43,6 +47,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useSWR from "swr";
 import { Card, CardFooter } from "@/components/ui/card";
 import ValueChart from "../player/ValueChart";
+
+const toLowerWithoutAccents = (value) =>
+  value == null
+    ? null
+    : value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, '');
+
 
 const NewMarketDown = () => {
   const [rowData, setRowData] = useState();
@@ -89,7 +102,13 @@ const NewMarketDown = () => {
     }
   }, [playersWithStats]);
 
+  // const { data: matchesData } = useSWR("getAllMatches", async () => {
+  //   const { allMatches: matches } = await getAllMatches();
+  //   return matches;
+  // });
+
   //playersWithStats
+
   const prepareValueChangesData = (playerId) => {
     const playerData = rowData.find(
       (player) => player.playerData.playerID === playerId
@@ -126,6 +145,21 @@ const NewMarketDown = () => {
     return [];
   };
 
+  const [teamMatches, setTeamMatches] = useState([]);
+
+  const handlePlayerSelection = async (player) => {
+    if (player) {
+      const { data, error } = await getMatchesByTeamID(
+        player.playerData.teamID
+      );
+
+      if (!error) {
+        setTeamMatches(data);
+        handleOpen();
+      }
+    }
+  };
+
   const [columnDefs, setColumnDefs] = useState([
     {
       field: "playerData.playerID",
@@ -139,6 +173,7 @@ const NewMarketDown = () => {
       headerName: "Nombre",
       minWidth: 110,
       cellRenderer: tablePlayerNames,
+ 
     },
     {
       field: "playerData.lastMarketChange",
@@ -146,7 +181,6 @@ const NewMarketDown = () => {
       minWidth: 90,
       sort: "asc",
       headerClass: "ag-center-header",
-
       cellRenderer: tableSubidasBajadas,
     },
     {
@@ -229,6 +263,7 @@ const NewMarketDown = () => {
       gridApi.setQuickFilter(e.target.value);
     }
   };
+  
   const marketValueDates = selectedPlayer?.playerData?.marketValues?.map(
     (entry: any) => new Date(entry.date)
   );
@@ -252,16 +287,16 @@ const NewMarketDown = () => {
               timeout: 400,
             },
           }}
-          className="flex justify-center items-center h-screen"
+          className="flex justify-center items-center "
         >
           <Fade
             in={open}
             // timeout={{ enter: 100, exit: 100 }}
             // style={{ transitionDelay: open ? "0ms" : "0ms" }} // Adjust this value
           >
-             <Card className=" w-[330px] h-[610px] p-4 transition-all absolute outline-none rounded-md flex flex-col justify-between ">
+            <Card className=" w-[330px] h-fit p-4 transition-all absolute outline-none rounded-md flex flex-col justify-between ">
               <Card className="py-2 px-4 flex flex-row justify-between items-center rounded-md ">
-                <div className="flex flex-col justify-center items-start gap-2">
+                <div className="flex flex-col justify-between items-start h-full ">
                   <div className="flex flex-col justify-center items-start gap-y-1 text-sm">
                     <div className="flex flex-row justify-center items-center gap-x-2">
                       Puntos:{" "}
@@ -282,41 +317,76 @@ const NewMarketDown = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col justify-center items-end gap-y-1">
-                    <div className="flex flex-row justify-center items-center text-xs">
-                      Ultimas 5 Jornadas
-                    </div>
+                  <div className="flex flex-col justify-center items-end gap-y-1 mt-4">
                     <div className="flex flex-row items-center gap-x-1">
                       {getWeeksTotalPointsFromStats(
                         selectedPlayer.playerData.playerID,
                         rowData,
                         6
-                      ).map((point) => (
-                        <div
-                          className="flex flex-col justify-center items-center "
-                          key={point.week}
-                        >
+                      ).map((point) => {
+                        const match = teamMatches.find(
+                          (match) => match.week === point.week
+                        );
+
+                        return (
                           <div
-                            className={`text-center border-[0.5px] w-5 h-5 border-neutral-700   rounded-sm  flex justify-center items-center  ${getColor(
-                              point.points
-                            )}`}
+                            className="flex flex-col justify-center items-center "
+                            key={point.week}
                           >
-                            <p
-                              className={`text-[12px] items-center align-middle`}
-                            >
-                              {point.points}
-                            </p>
+                            <div className="flex flex-col justify-center items-center">
+                              {match &&
+                                match.localTeamID !==
+                                  selectedPlayer.playerData.teamID && (
+                                  <Image
+                                    src={`/teamLogos/${slugById(
+                                      match.localTeamID
+                                    )}.png`}
+                                    alt="opponent"
+                                    width={20}
+                                    height={20}
+                                    style={{ objectFit: "contain" }}
+                                    className="h-[18px] mb-1"
+                                  />
+                                )}
+
+                              {match &&
+                                match.visitorTeamID !==
+                                  selectedPlayer.playerData.teamID && (
+                                  <Image
+                                    src={`/teamLogos/${slugById(
+                                      match.visitorTeamID
+                                    )}.png`}
+                                    alt="opponent"
+                                    width={20}
+                                    height={20}
+                                    style={{ objectFit: "contain" }}
+                                    className="h-[18px] mb-1 "
+                                  />
+                                )}
+
+                              <div
+                                className={`text-center border-[0.5px] w-5 h-5 border-neutral-700 rounded-sm flex justify-center items-center ${getColor(
+                                  point.points
+                                )}`}
+                              >
+                                <p
+                                  className={`text-[12px] items-center align-middle`}
+                                >
+                                  {point.points}
+                                </p>
+                              </div>
+                              <div className="text-center text-[11px]">
+                                J{point.week}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-center text-[11px]">
-                            J{point.week}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-center items-center gap-y-2">
-                  <div className="flex flex-col justify-center items-center gap-1">
+                <div className="flex flex-col justify-center items-center gap-y-2 w-fit">
+                  <div className="">
                     <Image
                       src={selectedPlayer.playerData.image}
                       alt={selectedPlayer.playerData.nickname}
@@ -324,18 +394,18 @@ const NewMarketDown = () => {
                       height={64}
                       className="h-16 w-auto "
                     />
-                    <div className="flex justify-between items-center text-center font-bold text-md uppercase max-w-[132px]">
-                      {selectedPlayer.playerData.nickname}
-                    </div>
+                  </div>
+                  <div className="text-sm		 font-bold uppercase text-center w-min 	whitespace-nowrap	 ">
+                    {selectedPlayer.playerData.nickname}
                   </div>
                   <Image
                     src={`/teamLogos/${slugById(
                       selectedPlayer.playerData.teamID
                     )}.png`}
                     alt={selectedPlayer.playerData.teamName}
-                    width={48}
-                    height={48}
-                    className="h-6 w-auto"
+                    width={28}
+                    height={28}
+                    className="h-7 w-auto"
                   />
                 </div>
               </Card>
@@ -353,24 +423,23 @@ const NewMarketDown = () => {
                     <Table className="m-auto w-auto mt-1">
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="h-2 font-extrabold text-left w-[70px] text-xs">
+                          <TableHead className="h-4 font-extrabold text-left w-[80px] text-xs">
                             Fecha
                           </TableHead>
-                          <TableHead className="h-2 font-extrabold text-center text-xs">
-                            $ Cambio
-                          </TableHead>
-                          <TableHead className="h-2 flex flex-row justify-center   font-extrabold text-center text-xs">
-                            {/* <ChevronsDown
+                          <TableHead className="ml-2 flex flex-row justify-center items-center h-4 font-extrabold text-center text-xs">
+                            <ChevronsDown
                               size={14}
-                              className=" text-red-500 dark:text-red-400 "
-                            /> */}
+                              className=" text-red-500 dark:text-red-400"
+                            />
+                            <ChevronsUp
+                              size={14}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                          </TableHead>
+                          <TableHead className="h-4 font-extrabold text-center text-xs">
                             %
-                            {/* <ChevronsUp
-                              size={14}
-                              className="text-green-600 dark:text-green-400 mr-2"
-                            /> */}
                           </TableHead>
-                          <TableHead className="h-2 font-extrabold text-right text-xs">
+                          <TableHead className="h-4 font-extrabold text-right text-xs">
                             $ Actual
                           </TableHead>
                         </TableRow>
@@ -380,7 +449,7 @@ const NewMarketDown = () => {
                           selectedPlayer.playerData.playerID
                         ).map((change, index) => (
                           <TableRow key={index}>
-                            <TableCell className="text-left py-1 text-xs tabular-nums tracking-tight">
+                            <TableCell className="text-left py-1 text-xs tabular-nums tracking-tight w-fit whitespace-nowrap">
                               {formatDate(change.date)}
                             </TableCell>
                             <TableCell className="py-1 text-xs">
@@ -438,7 +507,7 @@ const NewMarketDown = () => {
                   </Card>{" "}
                 </TabsContent>
                 <TabsContent value="graph" className="h-fit ">
-                  <Card className="h-96 w-full pt-0 flex flex-col justify-start gap-4 items-center rounded-md border-none shadow-none">
+                  <Card className="h-[360px] w-full pt-0 flex flex-col justify-start gap-4 items-center rounded-md border-none shadow-none">
                     <ValueChart fetchedPlayer={selectedPlayer.playerData} />
                     <div className="flex flex-col gap-4">
                       <div className="text-center">
@@ -509,7 +578,6 @@ const NewMarketDown = () => {
       <Paper
         elevation={4}
         id="grid-wrapper"
-     
         className={
           "h-auto flex flex-col justify-start items-center transition-all"
         }
@@ -517,10 +585,11 @@ const NewMarketDown = () => {
         {/* Search Bar */}
         <Box className="flex flex-row justify-between items-center w-full h-16 px-3">
           <span className="flex justify-center items-center md:text-lg font-semibold mr-2 w-full text-center">
-            <ChevronsDown
+          <ChevronsDown
               size={24}
               className="text-red-500 dark:text-red-400 mr-2"
             />{" "}
+
             Ultimas Bajadas
           </span>
           <div className="relative w-full flex flex-row justify-center items-center">
@@ -554,7 +623,7 @@ const NewMarketDown = () => {
             suppressMovableColumns={true}
             onRowClicked={(event) => {
               setSelectedPlayer(event.data);
-              handleOpen();
+              handlePlayerSelection(event.data);
             }}
           ></AgGridReact>
         </div>
