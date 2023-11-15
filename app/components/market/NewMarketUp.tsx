@@ -205,7 +205,6 @@ const NewMarketUp = () => {
   const defaultColDef = {
     resizable: false,
     sortable: false,
-    filter: false,
   };
 
   const gridRef = useRef();
