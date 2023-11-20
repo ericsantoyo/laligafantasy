@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+
 export default (props) => {
   const cellValue = props.value;
 

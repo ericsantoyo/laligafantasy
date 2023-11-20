@@ -22,17 +22,17 @@ export default async function Team({ params }: { params: { teamID: number } }) {
   const team = teamData[0];
   const { data: playersData } = await getPlayersByTeamID(params.teamID);
   const players = playersData;
-  const { data: matchesData } = await getAllMatches();
+  const { allMatches: matchesData } = await getAllMatches();
   const matches = matchesData;
   const { allStats: fetchedStats } = await getAllStats();
   // const stats = fetchedStats;
 
-  function formatPlayersWithStats(players, stats) {
+  function formatPlayersWithStats(players: any, stats: any) {
     const formattedPlayers = [];
 
     for (const player of players) {
       const playerStats = stats.filter(
-        (stat) => stat.playerID === player.playerID
+        (stat: { playerID: any; }) => stat.playerID === player.playerID
       );
       formattedPlayers.push({ playerData: player, stats: playerStats });
     }
@@ -43,12 +43,17 @@ export default async function Team({ params }: { params: { teamID: number } }) {
   const playersWithStats = formatPlayersWithStats(playersData, fetchedStats);
 
   const getSortedPlayersByPoints = () => {
+    if (!players) {
+      // Handle the case where players is null
+      return [];
+    }
+  
+    // If players is not null, make a copy of the array and sort it
     let sorted = [...players];
-    sorted.sort((a, b) => {
-      return b.points - a.points;
-    });
+    sorted.sort((a, b) => b.points - a.points);
     return sorted;
   };
+  
 
   const sortedPlayers = getSortedPlayersByPoints();
 

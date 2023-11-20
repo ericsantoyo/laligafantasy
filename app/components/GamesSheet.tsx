@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { slugById } from "@/utils/utils";
+import { getCurrentWeek, slugById } from "@/utils/utils";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -28,39 +28,9 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-const getCurrentWeek = (matchesData) => {
-  const today = new Date();
-
-  for (const match of matchesData) {
-    const matchDate = new Date(match.matchDate);
-
-    if (
-      today.getDate() === matchDate.getDate() &&
-      today.getMonth() === matchDate.getMonth() &&
-      today.getFullYear() === matchDate.getFullYear()
-    ) {
-      return match.week;
-    }
-
-    const allMatchesForWeek = matchesData.filter((m) => m.week === match.week);
-    const allMatchesFinished = allMatchesForWeek.every(
-      (m) => m.matchState === 7
-    );
-
-    if (allMatchesFinished) {
-      const nextWeek = match.week + 1;
-      return nextWeek;
-    }
-  }
-
-  console.log("No matching week found, defaulting to week 1");
-  return 1;
-};
-
-
 // Your component
 export default function GamesSheet() {
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [selectedWeek, setSelectedWeek] = useState<number>(1); // Fix 1: Specify the type of selectedWeek as number
   // Using SWR to fetch data
   const {
     data: matches,
@@ -81,8 +51,9 @@ export default function GamesSheet() {
     return <div>Error fetching matches</div>;
   }
 
-  const handleWeekChange = (value) => {
-    setSelectedWeek(value);
+  const handleWeekChange = (value: string) => {
+    // Fix 2: Change the type of value to string
+    setSelectedWeek(parseInt(value)); // Fix 3: Parse the string value to number
   };
 
   const handlePrevWeek = () => {
@@ -106,7 +77,7 @@ export default function GamesSheet() {
             <ChevronLeftIcon />
           </IconButton>
           <Select
-            value={selectedWeek}
+            value={selectedWeek.toString()}
             onValueChange={handleWeekChange}
             disabled
           >
@@ -115,7 +86,9 @@ export default function GamesSheet() {
             </SelectTrigger>
             <SelectContent>
               {Array.from({ length: 38 }, (_, index) => (
-                <SelectItem key={index + 1} value={index + 1}>
+                <SelectItem key={index + 1} value={(index + 1).toString()}>
+                  {" "}
+                  {/* Fix 4: Convert the number to string */}
                   {`Jornada ${index + 1}`}
                 </SelectItem>
               ))}
@@ -158,7 +131,6 @@ export default function GamesSheet() {
   // Displaying matches
   return (
     <div className="flex flex-col justify-start items-center h-full overflow-y-auto">
-
       <div className="flex flex-row justify-center items-center w-full mt-5">
         <p className="text-xl font-semibold">PARTIDOS</p>
       </div>
@@ -166,13 +138,18 @@ export default function GamesSheet() {
         <IconButton onClick={handlePrevWeek}>
           <ChevronLeftIcon />
         </IconButton>
-        <Select value={selectedWeek} onValueChange={handleWeekChange}>
+        <Select
+          value={selectedWeek.toString()}
+          onValueChange={handleWeekChange}
+        >
           <SelectTrigger>
             <SelectValue>{`Jornada ${selectedWeek}`}</SelectValue>
           </SelectTrigger>
           <SelectContent className="max-h-[var(--radix-select-content-available-height)] ">
             {Array.from({ length: 38 }, (_, index) => (
-              <SelectItem key={index + 1} value={index + 1}>
+              <SelectItem key={index + 1} value={(index + 1).toString()}>
+                {" "}
+                {/* Fix 5: Convert the number to string */}
                 {`Jornada ${index + 1}`}
               </SelectItem>
             ))}
@@ -189,7 +166,11 @@ export default function GamesSheet() {
         {matches &&
           matches.allMatches
             .filter((match) => match.week === selectedWeek)
-            .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
+            .sort(
+              (a, b) =>
+                new Date(a.matchDate).getTime() -
+                new Date(b.matchDate).getTime()
+            )
             .map((match) => (
               <div key={match.matchID}>
                 <Card className="flex flex-col justify-between items-center w-[155px] h-full py-[6px] text-center rounded-md">

@@ -21,21 +21,13 @@ interface PlayerStats {
   value: number;
 }
 
-interface PlayerWithStats {
-  playerData: {
-    playerID: string;
-    name: string;
-    position: string;
-  };
-  stats: PlayerStats[];
-}
-
 interface TeamInfoCardProps {
-  teamInfo;
-  playerInfo;
+  teamInfo: teams; 
+  playerInfo: players[] | null; 
 }
 
-export default async function TeamInfoCard({ teamInfo, playerInfo }) {
+export default async function TeamInfoCard({ teamInfo, playerInfo }: TeamInfoCardProps) {
+
   const { data: matchesData } = await getMatchesByTeamID(teamInfo.teamID);
 
   const teamMatches = matchesData;
@@ -54,7 +46,7 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }) {
         <div className="order-first md:order-none flex flex-col justify-betweem items-center flex-initial  md:flex-none w-[120px]">
           <Image
             src={teamInfo.image}
-            alt={teamInfo.shortName}
+            alt={teamInfo.nickname}
             width={96}
             height={96}
             style={{
@@ -67,7 +59,9 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }) {
 
           <div className="">
             {/* <p>Team name</p> */}
-            <p className="font-bold mx-auto	uppercase text-center  ">{teamInfo.name}</p>
+            <p className="font-bold mx-auto	uppercase text-center  ">
+              {teamInfo.name}
+            </p>
           </div>
         </div>
         <div className="hidden md:flex flex-col justify-between items-start gap-2 ">

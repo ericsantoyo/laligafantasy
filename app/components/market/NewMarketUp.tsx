@@ -43,16 +43,74 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { slugById } from "@/utils/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import useSWR from "swr";
 import { Card, CardFooter } from "@/components/ui/card";
 import ValueChart from "../player/ValueChart";
 
+interface Player {
+  averagePoints: number;
+  image: string;
+  lastMarketChange: number;
+  marketValue: number;
+  marketValues: Array<{
+    lfpId: number;
+    marketValue: number;
+    date: string;
+    bids: number;
+  }>;
+  name: string;
+  nickname: string;
+  playerID: number;
+  points: number;
+  position: string;
+  positionID: number;
+  previousMarketValue: number;
+  status: string;
+  teamID: number;
+  teamName: string;
+}
+
+interface Stat {
+  ball_recovery: [number, number];
+  effective_clearance: [number, number];
+  goal_assist: [number, number];
+  goals: [number, number];
+  goals_conceded: [number, number];
+  isInIdealFormation: boolean;
+  marca_points: [number, number];
+  mins_played: [number, number];
+  offtarget_att_assist: [number, number];
+  own_goals: [number, number];
+  pen_area_entries: [number, number];
+  penalty_conceded: [number, number];
+  penalty_failed: [number, number];
+  penalty_save: [number, number];
+  penalty_won: [number, number];
+  playerID: number;
+  poss_lost_all: [number, number];
+  red_card: [number, number];
+  saves: [number, number];
+  second_yellow_card: [number, number];
+  total_scoring_att: [number, number];
+  totalPoints: number;
+  week: number;
+  won_contest: [number, number];
+  yellow_card: [number, number];
+}
+
+interface PlayerWithStats {
+  playerData: Player;
+  stats: Stat[];
+}
+
 const NewMarketUp = () => {
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState<PlayerWithStats[]>();
+
   // const { theme } = useTheme();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerWithStats | null>(
+    null
+  );
   const [gridClassName, setGridClassName] = useState("");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -64,7 +122,10 @@ const NewMarketUp = () => {
   //   );
   // }, [theme]);
 
-  function formatPlayersWithStats(players, stats) {
+  function formatPlayersWithStats(
+    players: Player[],
+    stats: Stat[]
+  ): PlayerWithStats[] {
     const formattedPlayers = [];
 
     for (const player of players) {
@@ -80,8 +141,10 @@ const NewMarketUp = () => {
   const { data: playersWithStats, error } = useSWR(
     ["getAllPlayers", "getAllStats"],
     async () => {
-      const { allPlayers: players } = await getAllPlayers();
-      const { allStats: stats } = await getAllStats();
+      const { allPlayers: players } = (await getAllPlayers()) as {
+        allPlayers: Player[];
+      };
+      const { allStats: stats } = (await getAllStats()) as { allStats: Stat[] };
 
       return formatPlayersWithStats(players, stats);
     }
@@ -99,7 +162,7 @@ const NewMarketUp = () => {
   // });
 
   //playersWithStats
-  const prepareValueChangesData = (playerId) => {
+  const prepareValueChangesData = (playerId: number) => {
     const playerData = rowData.find(
       (player) => player.playerData.playerID === playerId
     );
@@ -135,17 +198,21 @@ const NewMarketUp = () => {
     return [];
   };
 
-  const [teamMatches, setTeamMatches] = useState([]);
+  const [teamMatches, setTeamMatches] = useState<matches[]>([]);
 
-  const handlePlayerSelection = async (player) => {
+  const handlePlayerSelection = async (player: PlayerWithStats) => {
     if (player) {
       const { data, error } = await getMatchesByTeamID(
         player.playerData.teamID
       );
 
-      if (!error) {
-        setTeamMatches(data);
+      if (data && !error) {
+        setTeamMatches(data as matches[]); // Cast to Match[] if you're sure about the data structure.
         handleOpen();
+      } else {
+        // Handle the case when data is null or there's an error
+        // For example, you might want to set teamMatches to an empty array or show an error message.
+        setTeamMatches([]);
       }
     }
   };
@@ -207,29 +274,30 @@ const NewMarketUp = () => {
     sortable: false,
   };
 
-  const gridRef = useRef();
+  const gridRef = useRef<AgGridReact>(null);
   const [gridApi, setGridApi] = useState(null);
+  const gridApiRef = useRef<any>(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
 
-  const onFirstDataRendered = useCallback((params) => {
-    gridRef.current.api.sizeColumnsToFit();
+  const onFirstDataRendered = useCallback((params = {}) => {
+    gridRef.current?.api.sizeColumnsToFit();
   }, []);
 
-  const onGridSizeChanged = useCallback((params) => {
+  const onGridSizeChanged = useCallback((params = {}) => {
     // get the current grids width
-    var gridWidth = document.getElementById("grid-wrapper").offsetWidth;
+    var gridWidth = document.getElementById("grid-wrapper")?.offsetWidth;
     // keep track of which columns to hide/show
     var columnsToShow = [];
     var columnsToHide = [];
     // iterate over all columns (visible or not) and work out
     // now many columns can fit (based on their minWidth)
     var totalColsWidth = 0;
-    var allColumns = gridRef.current.columnApi.getColumns();
+    var allColumns = gridRef.current?.columnApi.getColumns();
     if (allColumns && allColumns.length > 0) {
       for (var i = 0; i < allColumns.length; i++) {
         var column = allColumns[i];
         totalColsWidth += column.getMinWidth() || 0;
-        if (totalColsWidth > gridWidth) {
+        if (gridWidth !== undefined && totalColsWidth > gridWidth) {
           columnsToHide.push(column.getColId());
         } else {
           columnsToShow.push(column.getColId());
@@ -237,24 +305,27 @@ const NewMarketUp = () => {
       }
     }
     // show/hide columns based on current grid width
-    gridRef.current.columnApi.setColumnsVisible(columnsToShow, true);
-    gridRef.current.columnApi.setColumnsVisible(columnsToHide, false);
+    gridRef.current?.columnApi.setColumnsVisible(columnsToShow, true);
+    gridRef.current?.columnApi.setColumnsVisible(columnsToHide, false);
     // fill out any available space to ensure there are no gaps
-    gridRef.current.api.sizeColumnsToFit();
+    gridRef.current?.api.sizeColumnsToFit();
   }, []);
 
   function onGridReady(params: any) {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
+    gridApiRef.current = params.api;
   }
   const onFilterTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (gridApi) {
-      gridApi.setQuickFilter(e.target.value);
+      gridApiRef.current.setQuickFilter(e.target.value);
     }
   };
+
   const marketValueDates = selectedPlayer?.playerData?.marketValues?.map(
-    (entry: any) => new Date(entry.date)
+    (entry: { date: string }) => new Date(entry.date)
   );
+
   const marketValueList = selectedPlayer?.playerData?.marketValues.map(
     (entry) => entry.marketValue
   );
@@ -312,7 +383,7 @@ const NewMarketUp = () => {
                         rowData,
                         6
                       ).map((point) => {
-                        const match = teamMatches.find(
+                        const match = teamMatches?.find(
                           (match) => match.week === point.week
                         );
 
@@ -501,58 +572,60 @@ const NewMarketUp = () => {
                       <div className="text-center">
                         <p className="text-center text-sm">Valor minimo:</p>
                         <span className="font-bold">
-                          {Math.min(...marketValueList).toLocaleString(
-                            "es-ES",
-                            {
-                              style: "currency",
-                              currency: "EUR",
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            }
-                          )}
+                          {marketValueList &&
+                            Math.min(...marketValueList).toLocaleString(
+                              "es-ES",
+                              {
+                                style: "currency",
+                                currency: "EUR",
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                              }
+                            )}
                         </span>{" "}
                         <span className="text-xs text-gray-500 capitalize">
-                          (
-                          {new Date(
-                            marketValueDates[
-                              marketValueList.indexOf(
-                                Math.min(...marketValueList)
-                              )
-                            ]
-                          ).toLocaleDateString("es-EU", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                          )
+                          {marketValueList && marketValueDates
+                            ? `(${new Date(
+                                marketValueDates[
+                                  marketValueList.indexOf(
+                                    Math.min(...marketValueList)
+                                  )
+                                ]
+                              ).toLocaleDateString("es-EU", {
+                                month: "short",
+                                day: "numeric",
+                              })})`
+                            : "(N/A)"}
                         </span>
                       </div>
 
                       <div className="text-center">
                         <p className="text-center text-sm">Valor maximo:</p>
                         <span className="font-bold ">
-                          {Math.max(...marketValueList).toLocaleString(
-                            "es-ES",
-                            {
-                              style: "currency",
-                              currency: "EUR",
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            }
-                          )}
+                          {marketValueList &&
+                            Math.max(...marketValueList).toLocaleString(
+                              "es-ES",
+                              {
+                                style: "currency",
+                                currency: "EUR",
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                              }
+                            )}
                         </span>{" "}
                         <span className="text-xs text-gray-500 capitalize">
-                          (
-                          {new Date(
-                            marketValueDates[
-                              marketValueList.indexOf(
-                                Math.max(...marketValueList)
-                              )
-                            ]
-                          ).toLocaleDateString("es-EU", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                          )
+                          {marketValueList && marketValueDates
+                            ? `(${new Date(
+                                marketValueDates[
+                                  marketValueList.indexOf(
+                                    Math.max(...marketValueList)
+                                  )
+                                ]
+                              ).toLocaleDateString("es-EU", {
+                                month: "short",
+                                day: "numeric",
+                              })})`
+                            : "(N/A)"}
                         </span>
                       </div>
                     </div>
@@ -596,6 +669,7 @@ const NewMarketUp = () => {
         <div id="myGrid" className={`ag-theme-balham w-full  transition-all`}>
           <AgGridReact
             rowData={rowData}
+            // @ ts-ignore
             columnDefs={columnDefs}
             onGridReady={onGridReady}
             ref={gridRef}
@@ -618,5 +692,5 @@ const NewMarketUp = () => {
     </>
   );
 };
-
+//cjamgeeeeeee
 export default NewMarketUp;

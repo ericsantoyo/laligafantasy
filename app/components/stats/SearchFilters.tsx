@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";  
 import {
   Select,
   SelectContent,
@@ -66,7 +66,7 @@ const SearchFilters = ({ search }: Props) => {
 
   useEffect(() => {
     async function fetchTeams() {
-      const { allTeams: fetchedTeams }: { allTeams: Team[] } =
+      const { allTeams: fetchedTeams }: { allTeams: teams[] } =
         await getAllTeams();
 
       setTeams(fetchedTeams);
@@ -121,7 +121,7 @@ const SearchFilters = ({ search }: Props) => {
       )}
 
       <Button
-        variant="stardard"
+        variant="ghost"
         size="default"
         className={` transition-all `}
         onClick={resetFilters}

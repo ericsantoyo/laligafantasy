@@ -13,7 +13,7 @@ const ValueChart = ({ fetchedPlayer }: Props) => {
 
   const chartData = [
     ["Date", "Market Value"],
-    ...last60DaysData.map((entry) => [
+    ...last60DaysData.map((entry: { date: string | number | Date; marketValue: number; }) => [
       new Date(entry.date).toLocaleDateString("es-EU", {
         month: "short",
         day: "numeric",
@@ -22,7 +22,7 @@ const ValueChart = ({ fetchedPlayer }: Props) => {
     ]),
   ];
 
-  const marketValueArray = last60DaysData.map((entry) => entry.marketValue);
+  const marketValueArray = last60DaysData.map((entry: { marketValue: number; }) => entry.marketValue);
 
   return (
     <Chart
