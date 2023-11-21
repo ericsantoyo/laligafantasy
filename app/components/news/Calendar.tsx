@@ -19,7 +19,7 @@ export default function Calendar({
 }: CalendarProps) {
   return (
     <>
-      <p className="text-center text-xl uppercase font-semibold mb-2">
+      <p className="text-center text-xl uppercase font-semibold ">
         CALENDARIO
       </p>
       <div className="flex flex-col justify-start items-start">

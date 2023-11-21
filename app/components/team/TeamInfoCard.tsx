@@ -43,7 +43,7 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }: TeamInfoCar
       <Card className="transition-all flex flex-row justify-between items-center gap-6 md:gap-8 md:px-6 px-4 py-4 text-xs md:text-sm rounded-sm">
         <NextMatches matches={teamMatches} selectedTeam={teamInfo.teamID} />
         {/* <pre className="text-center">{JSON.stringify(teamMatches, null, 2)}</pre> */}
-        <div className="order-first md:order-none flex flex-col justify-betweem items-center flex-initial  md:flex-none w-[120px]">
+        <div className="order-first md:order-none flex flex-col justify-betweem items-center flex-initial  md:flex-none  w-max	">
           <Image
             src={teamInfo.image}
             alt={teamInfo.nickname}
@@ -59,7 +59,7 @@ export default async function TeamInfoCard({ teamInfo, playerInfo }: TeamInfoCar
 
           <div className="">
             {/* <p>Team name</p> */}
-            <p className="font-bold mx-auto	uppercase text-center  ">
+            <p className="font-bold mx-auto	uppercase text-center  w-fit	">
               {teamInfo.name}
             </p>
           </div>

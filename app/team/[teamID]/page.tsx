@@ -11,6 +11,7 @@ import TeamInfoCard from "@/app/components/team/TeamInfoCard";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { notFound } from "next/navigation";
+import TeamLineup from "@/app/components/team/Lineup";
 
 export const revalidate = 0;
 
@@ -66,8 +67,8 @@ export default async function Team({ params }: { params: { teamID: number } }) {
             <TabsTrigger value="alineacion">Alineacion</TabsTrigger>
             <TabsTrigger value="plantilla">Plantilla</TabsTrigger>
           </TabsList>
-          <TabsContent value="alineacion">
-            Make changes to your account here.
+          <TabsContent value="alineacion" className="overflow-visible">
+            <TeamLineup teamselected={team.teamID} teamPlayers={sortedPlayers}/>
           </TabsContent>
           <TabsContent value="plantilla">
             <TeamLayout
