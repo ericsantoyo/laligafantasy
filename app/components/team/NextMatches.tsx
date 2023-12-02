@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { getUpcomingTeamMatches, slugById } from "@/utils/utils";
+import { getCurrentWeek, slugById } from "@/utils/utils";
 import Image from "next/image";
 import HomeIcon from "@mui/icons-material/Home";
 import FlightIcon from "@mui/icons-material/Flight";
@@ -9,10 +9,10 @@ interface Props {
   selectedTeam: number;
 }
 
-
-
 const NextMatches = ({ matches, selectedTeam }: Props) => {
-  const teamMatches = getUpcomingTeamMatches(matches, 4);
+  const teamMatches = matches;
+  const currentWeek = getCurrentWeek(teamMatches);
+  // console.log(currentWeek);
 
   return (
     <div className=" flex flex-col  md:flex-none min-w-fit">
@@ -22,6 +22,11 @@ const NextMatches = ({ matches, selectedTeam }: Props) => {
       <div className=" flex flex-row justify-end items-center md:gap-4 gap-3">
         {/* Display matches for the selected week */}
         {teamMatches
+          .filter(
+            (match) =>
+              match.week >= currentWeek && match.week <= currentWeek + 3
+          )
+          .sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate))
           .map((match) => (
             <div key={match.matchID}>
               <Card className="flex flex-col justify-between items-center border-none shadow-none h-full py-[6px] text-xs text-center rounded-md">

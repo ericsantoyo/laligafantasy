@@ -1,4 +1,6 @@
+import { Card } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Props {
   teamselected: string;
@@ -26,22 +28,22 @@ const TeamLineup: React.FC<Props> = ({ teamselected, teamPlayers }) => {
     .slice(0, 3);
 
   const positions = {
-    goalkeepers: [{ top: "90%", left: "50%" }],
+    goalkeepers: [{ top: "89%", left: "50%" }],
     defenders: [
-      { top: "68%", left: "15%" },
+      { top: "63%", left: "15%" },
       { top: "72%", left: "38%" },
       { top: "72%", left: "62%" },
-      { top: "68%", left: "85%" },
+      { top: "63%", left: "85%" },
     ],
     midfielders: [
-      { top: "45%", left: "25%" },
+      { top: "40%", left: "23%" },
       { top: "52%", left: "50%" },
-      { top: "45%", left: "75%" },
+      { top: "40%", left: "78%" },
     ],
     forwards: [
-      { top: "25%", left: "20%" },
-      { top: "15%", left: "50%" },
-      { top: "25%", left: "80%" },
+      { top: "22%", left: "20%" },
+      { top: "12%", left: "50%" },
+      { top: "22%", left: "80%" },
     ],
   };
 
@@ -49,44 +51,64 @@ const TeamLineup: React.FC<Props> = ({ teamselected, teamPlayers }) => {
     return players.map((player, index) => (
       <div
         key={player.playerID}
-        className="player flex flex-col justify-center items-center"
+        className="player flex flex-col items-center justify-center"
         style={{
           position: "absolute",
           top: positions[positionType][index].top,
           left: positions[positionType][index].left,
           transform: "translate(-50%, -50%)",
+          width: "84px", // larger width
+          height: "84px", // larger height to allow zooming
         }}
       >
-        <Image
-          src={player.image}
-          alt={player.name}
-          width={64}
-          height={64}
-          className="w-16"
-        />
-        <span className="font-semibold text-center">
-          {player.nickname.split(" ").slice(-1).join(" ")}
-        </span>
+        <div
+          className="image-container"
+          style={{ position: "relative", width: "100%", height: "100%" }}
+        >
+          <Link href={`/player/${player.playerID}`}>
+            <Image
+              src={player.image}
+              alt={player.name}
+              fill={true}
+              style={{ objectFit: "contain" }}
+              priority
+            />
+          </Link>
+        </div>
+        <Link href={`/player/${player.playerID}`}>
+          <Card className="font-semibold text-center min-w-[72px] px-2 border-none rounded-xs text-base shadow-md shadow-neutral-800 text-neutral-800 backdrop-blur-xl bg-white/50 whitespace-nowrap	">
+            {player.nickname.split(" ").slice(-1).join(" ")}
+          </Card>
+        </Link>
       </div>
     ));
   };
 
-  const aspectRatio = (686 / 400) * 100; // This should be height / width
-  // <div className="lineup-container relative" style={{ width: '400px', height: '686px' }}>
-  //style={{ position: 'relative', width: '400px', height: '686px' }}
+  const aspectRatio = (900 / 600) * 100; // This should be height / width
+
   return (
-    <div className="relative w-full">
-      {/* Aspect ratio box to maintain the ratio */}
-      <div className="aspect-ratio-box" style={{ paddingTop: `${aspectRatio}%` }}>
-        {/* Actual image container */}
-        <div className="absolute top-0 left-0 right-0 bottom-0">
-          <Image src="/field.png" alt="Soccer Field" layout="fill" objectFit="contain" />
+    <div className="w-full ">
+      <div className="relative max-w-2xl mx-auto min-w-[343px]">
+    
+        <div className="w-full ">
+          <Image
+            src="/FieldLineup.png"
+            alt="Soccer Field"
+            width={600}
+            height={900}
+            // fill={true}
+            // style={{objectFit: "contain"}}
+            className=" w-full h-auto"
+            priority
+          />
         </div>
+      
+
+        {goalkeepers && renderPlayers(goalkeepers, "goalkeepers")}
+        {defenders && renderPlayers(defenders, "defenders")}
+        {midfielders && renderPlayers(midfielders, "midfielders")}
+        {forwards && renderPlayers(forwards, "forwards")}
       </div>
-      {goalkeepers && renderPlayers(goalkeepers, "goalkeepers")}
-      {defenders && renderPlayers(defenders, "defenders")}
-      {midfielders && renderPlayers(midfielders, "midfielders")}
-      {forwards && renderPlayers(forwards, "forwards")}
     </div>
   );
 };
